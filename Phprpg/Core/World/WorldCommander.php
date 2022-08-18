@@ -120,7 +120,7 @@ class WorldCommander {
         foreach ($mobs as $y => $line){
             
             foreach ($line as $x => $mob){
-                Lo::g("why is no one walkin ".get_class($mob));
+
                 if ('Phprpg\Core\Entities\Mob' != get_class($mob) || $mob->isExpired()){
                     continue;
                 }

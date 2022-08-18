@@ -123,18 +123,17 @@ if ($state->isGameStarted()){
     
     $output->setCoordinates($worldCommander->getPlayerCoordinates());
     
+    $output->setJoinCode($state->getJoinCode());
+    $output->setTurnMessage($state->getMessage());
+
+
+
+    $output->setVictoryDefeatMessage($world->getVictoryDefeat()->getMessage());
+    
     Lo::g("<p>mobs left ".$world->getMobStorage()->getAllEntityCount()."</p>");
 }
 
-$output->setJoinCode($state->getJoinCode());
-$output->setTurnMessage($state->getMessage());
 
-
-//$victory_defeat = new VictoryDefeat(require 'config/victory.php', $world);
-
-
-
-$output->setVictoryDefeatMessage($world->getVictoryDefeat()->getMessage());
 
 
 $mem = memory_get_usage()/1024;

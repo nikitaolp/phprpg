@@ -36,7 +36,7 @@ class Output {
         $this->victory_defeat_message = $str;
     }
     
-    public function setJoinCode(string $join_code){
+    public function setJoinCode(?string $join_code){
         $this->join_code = $join_code;
     }
     

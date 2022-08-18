@@ -61,7 +61,10 @@ class GameState {
     }
     
     public function getJoinCode():?string{
-        return $_SESSION[$this->game_session_name];
+        if (!empty($_SESSION[$this->game_session_name])){
+            return $_SESSION[$this->game_session_name];
+        }
+        return null;
     }
     
     public function isGameStarted():bool{
