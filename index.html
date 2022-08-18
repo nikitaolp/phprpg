@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PHP RPG</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--<script src="https://unpkg.com/vue@3"></script>-->
+        <link rel="prefetch" href="/Phprpg/Resources/Gfx/dirt.png" />
+        <link rel="prefetch" href="/Phprpg/Resources/Gfx/grass.png" />
+        <link rel="prefetch" href="/Phprpg/Resources/Gfx/mountain3.png" />
+        <link rel="prefetch" href="/Phprpg/Resources/Gfx/water.png" />
+        <link rel="prefetch" href="/Phprpg/Resources/Gfx/rat.png" />
+        <link rel="prefetch" href="/Phprpg/Resources/Gfx/undead.png" />
+
+        <style>
+            body{
+                padding:0;
+                margin:0;
+                background-color:#0E6840;
+            }
+            
+            .container{
+                text-align:center;
+                display:flex;
+                flex-direction:row;
+            }
+            
+            #log{
+                padding:10px;
+                text-align:left;
+                color:#a3a361;
+                overflow-wrap: break-word;
+            }
+            
+            #joinCode{overflow-wrap: break-word;}
+            
+            .col25{
+                width:25%;
+            }
+            
+            .col50{
+                width:50%;
+            }
+            
+            #controls{
+                margin:auto;
+                margin-top:20px;
+                width:50%;
+                
+            }
+            
+            #playerInfo{
+                color:#d9d986;
+            }
+            
+            #turnMessage{
+                color:red;
+            }
+            
+            #actionContainer{
+                margin:auto;
+                width:100%;
+            }
+            
+            .mapLine {
+                display:grid;
+                grid-auto-columns: minmax(0, 1fr); 
+                grid-auto-flow: column;
+            }
+
+            .tilebg{
+
+                aspect-ratio: 1/ 1;
+  display: flex;
+                background-size: cover;
+            }
+
+             .mobImg{
+             width:100%;
+             display:block;
+            }
+
+            .mobImg.attack{
+                background-image:url(/resources/gfx/attack.png);
+                background-repeat: no-repeat;
+            }
+
+            .mobImg.traitor{
+                filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
+            }
+
+            .direction_south{
+            transform: rotate(270deg);
+            }
+
+            .direction_north{
+            transform: rotate(90deg);
+            }
+            .direction_east{
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            }  
+            .direction_west{
+            }  
+
+            .tileblack{
+                background-color:black;
+            }
+
+            .grass{
+                background-image:url(/Phprpg/Resources/Gfx/grass.png);
+            }
+
+            .dirt{
+                background-image:url(/Phprpg/Resources/Gfx/dirt.png);
+            }
+
+            .water{
+                background-image:url(/Phprpg/Resources/Gfx/water.png);
+            }
+            .mountain{
+                background-image:url(/Phprpg/Resources/Gfx/mountain3.png);
+            }
+
+            .emptyHelper{
+                display: block;
+            }
+
+            .mobHelper:before{
+                    height: 10px;
+                    content: attr(data-level);
+                    color: #fdfdff;
+                    width: 10px;
+                    margin-bottom: -10px;
+                    display: block;
+                    font-size: 10px;
+                    font-weight: bold;
+                    z-index: 15;
+            }
+
+            .mobHelper:after{
+                height: 2px;
+                width: var(--health-width);
+                background-color: #2ce716;
+                content: ' ';
+                display: block;
+                z-index: 15;
+                margin-top: -2px;
+
+                max-width: 96%;
+            }
+
+            .dpad{
+                text-align:center;
+            }
+
+            .controlButton{
+                width:50px;
+                height:24px;
+            }
+
+            .newGameForm{
+                display:inline-block;
+            }
+            
+            .requestLoading{
+                cursor:wait;
+            }
+                
+        </style>
+    </head>
+    <body id="gamePage">
+      <div class="container">
+          
+        <div class="col25">
+             <div id="log"></div>
+        </div>
+        <div class="col50">
+            <form class='newGameForm' action="/Phprpg/action.php" method="POST">
+                <input type="hidden" id="newgame" name="newgame" value="true">
+                <button>New game</button>
+            </form>
+
+
+              <button onclick="updatePlayArea('skip');">End Turn</button>
+              <button onclick="autoTurn('skip');">Auto Turn</button>
+
+              <div id="actionContainer"></div>
+              <div id="controls">
+                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','north');">🡡</button></div>
+                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','west');">🡠</button><button class="controlButton" onclick="updatePlayArea('move','skip');">SKIP</button><button class="controlButton" onclick="updatePlayArea('move','east');">🡢</button></div>
+                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','south');">🡣</button></div>
+                  <div></div>
+              </div>
+            
+        </div>
+          <div class="col25">
+              <div id="joinCode"></div>
+              <div id="turnMessage"></div>
+              <div id="playerInfo"></div>
+              <div id="victoryDefeat"></div>
+          </div>
+          
+
+        </div>
+    </body>
+    <script>
+
+      
+        var auto = false;
+        var timeoutId = null;
+        
+        var action = 'check';
+        
+        var req = new XMLHttpRequest();
+        
+        req.onreadystatechange = function() {
+            if (req.readyState === 4) {
+                
+                
+                try {
+                    var response = JSON.parse(req.responseText);
+                } catch (e) {
+                    console.log(req.responseText);
+                }
+                
+                if (response){
+                    document.getElementById("actionContainer").innerHTML = response.map;
+                    document.getElementById("log").innerHTML = response.log;
+                    document.getElementById("playerInfo").innerHTML = response.player_info;
+                    document.getElementById("turnMessage").innerHTML = response.turn_message;
+                    document.getElementById("victoryDefeat").innerHTML = response.victory_defeat_message;
+
+                    if (document.getElementById("joinCode").innerHTML !== response.join_code){
+                        document.getElementById("joinCode").innerHTML = response.join_code;
+                    }
+                }
+                
+                
+                
+                document.getElementById("gamePage").classList.remove("requestLoading");
+                timeoutId = setTimeout(function(){autoTurn(action);}, 2200);
+
+            }
+        };
+        
+        
+        function updatePlayArea(act = 'check',dir = ''){
+            
+            var request_states = [1, 2, 3];
+            
+            if (!request_states.includes(req.readyState)) {
+                document.getElementById("gamePage").classList.add("requestLoading");
+            
+
+                req.abort();
+                clearTimeout(timeoutId);
+                action = 'check';
+
+                req.open('POST', '/Phprpg/action.php');
+                req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                req.send(JSON.stringify({'action':act,'direction':dir}));
+                
+            }
+            
+            
+            
+            
+            
+
+        }
+        
+        function autoTurn(act = 'check'){
+            
+            if (act === 'skip'){
+                action = 'skip';
+            }
+            document.getElementById("gamePage").classList.add("requestLoading");
+            auto = true;
+            req.open('POST', '/Phprpg/action.php');
+            req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            req.send(JSON.stringify({'action':act}));
+        }
+        
+        autoTurn('check');
+        
+        document.addEventListener('keypress', (event) => {
+            var name = event.key;
+            var code = event.code;
+
+              switch (code) {
+                case 'KeyW':
+                  updatePlayArea('move','north');
+                  break;
+                case 'KeyS':
+                  updatePlayArea('move','south');
+                  break;
+                case 'KeyA':
+                    updatePlayArea('move','west');
+                    break;
+                case 'KeyD':
+                  updatePlayArea('move','east');
+                  break;
+
+              }
+
+          }, false);
+    </script>
+</html>
