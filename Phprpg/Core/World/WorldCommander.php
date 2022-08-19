@@ -48,6 +48,7 @@ class WorldCommander {
             foreach ($mobs as $y => $line){
 
                 foreach ($line as $x => $mob){
+                    //these class checks are bad
                     if ('Phprpg\Core\Entities\Player' != get_class($mob) || $mob->isExpired()){
                         continue;
                     }
@@ -176,7 +177,7 @@ class WorldCommander {
 
             if ($defender->isExpired()){
                 
-                if ('Player' == get_class($defender)){
+                if ('Phprpg\Core\Entities\Player' == get_class($defender)){
                     $this->world->addDeadPlayer($defender->getId());
                 }
                 $this->world->getMobStorage()->unsetEntity($newCoordinates);
@@ -196,7 +197,7 @@ class WorldCommander {
             if ($item = $this->world->getItemStorage()->getEntity($newCoordinates)){
                 $mob->pickupItem($item);
                 $this->world->getItemStorage()->unsetEntity($newCoordinates);
-                if ('Player' == get_class($mob) && $mob->isExpired()){
+                if ('Phprpg\Core\Entities\Player' == get_class($mob) && $mob->isExpired()){
                     $this->world->addDeadPlayer($mob->getId());
                 }
             }

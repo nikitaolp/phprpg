@@ -62,6 +62,10 @@
                 width:100%;
             }
             
+            #joinLink a{
+                color:pink;
+            }
+            
             .mapLine {
                 display:grid;
                 grid-auto-columns: minmax(0, 1fr); 
@@ -196,6 +200,7 @@
         </div>
           <div class="col25">
               <div id="joinCode"></div>
+              <div id="joinLink"></div>
               <div id="turnMessage"></div>
               <div id="playerInfo"></div>
               <div id="victoryDefeat"></div>
@@ -233,6 +238,7 @@
 
                     if (document.getElementById("joinCode").innerHTML !== response.join_code){
                         document.getElementById("joinCode").innerHTML = response.join_code;
+                        document.getElementById("joinLink").innerHTML = "<a href='/join.html?code="+response.join_code+"'>Join this game</a>";
                     }
                 }
                 

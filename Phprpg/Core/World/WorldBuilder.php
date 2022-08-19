@@ -53,11 +53,15 @@ class WorldBuilder {
     }
     
     public function isPlayerDead(int $id):bool{
+
         return in_array($id,$this->deadPlayers);
+       
     }
     
     public function addDeadPlayer(int $id){
+        
         $this->deadPlayers[] = $id;
+
     }
     
     public function getWorldTiles():array{

@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <form action="/action.php" method="POST">
+        <form action="/Phprpg/action.php" method="POST">
         <div>
           <label for="code">Enter invite code</label>
           <input name="code" id="code" value="">
@@ -15,6 +15,22 @@
           <button>Join game</button>
         </div>
       </form>
+        
+        <script>
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            
+            if (urlParams.get('code')){
+                var code = urlParams.get('code');
+                code.replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+                document.getElementById('code').value = code;
+            }
+            
+        </script>
     </body>
 </html>
 

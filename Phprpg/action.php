@@ -81,7 +81,7 @@ if ($state->isGameStarted()){
     
     
 
-    if ($state->checkIfYourTurnV3()){
+    if ($my_turn = $state->checkIfYourTurnV3()){
         
 
         if (in_array($input_action,['move','skip']) || $world->isPlayerDead($state->getPlayerId())){
@@ -110,14 +110,15 @@ if ($state->isGameStarted()){
         }
 
         $time_moved = microtime(true);
+        
     }
     
-    if ($state->isPlayerNew()){
+    if ($player_is_new = $state->isPlayerNew()){
         $worldCommander->addPlayer();
     }
     
     
-    if ($state->isPlayerNew() || $state->checkIfYourTurnV3()){
+    if ($player_is_new || $my_turn){
         $state->saveWorld($world);
     }
     

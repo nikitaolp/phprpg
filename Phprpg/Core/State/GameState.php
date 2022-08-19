@@ -259,6 +259,7 @@ class GameState {
 
 
     public function checkIfYourTurnV3(){
+        //the problem with this method is that it returns false if player was killed by mobs during his turn while there are more than 1 players active
         $last_turn_info = AppStorage::get('db')->getLastTurn($this->game_id);
         
 
