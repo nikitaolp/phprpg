@@ -49,6 +49,7 @@
                 
             }
             
+            
             #playerInfo{
                 color:#d9d986;
             }
@@ -62,8 +63,17 @@
                 width:100%;
             }
             
-            #joinLink a{
+            #joinLink a,#playerSlots{
                 color:pink;
+            }
+            
+            #victoryDefeat{
+                font-size:28px;
+                color:cyan;
+            }
+            
+            .gameInfo{
+                margin-bottom:15px;
             }
             
             .mapLine {
@@ -73,15 +83,14 @@
             }
 
             .tilebg{
-
                 aspect-ratio: 1/ 1;
-  display: flex;
+                display: flex;
                 background-size: cover;
             }
 
              .mobImg{
-             width:100%;
-             display:block;
+                width:100%;
+                display:block;
             }
 
             .mobImg.attack{
@@ -171,15 +180,38 @@
                 cursor:wait;
             }
                 
+           
+            @media (max-width: 980px){
+                .col25,.col50{
+                    width:100%;
+                    display:block;
+                }
+                
+                .colGame{
+                    order:1;
+                }
+                
+                .colLog{
+                    order:3;
+                }
+                
+                .colInfo{
+                    order:2;
+                }
+                
+                .container{
+                    flex-direction:column;
+                }
+            }
         </style>
     </head>
     <body id="gamePage">
       <div class="container">
           
-        <div class="col25">
+        <div class="col25 colLog">
              <div id="log"></div>
         </div>
-        <div class="col50">
+        <div class="col50 colGame">
             <form class='newGameForm' action="/Phprpg/action.php" method="POST">
                 <input type="hidden" id="newgame" name="newgame" value="true">
                 <button>New game</button>
@@ -198,12 +230,12 @@
               </div>
             
         </div>
-          <div class="col25">
-              <div id="joinCode"></div>
-              <div id="joinLink"></div>
-              <div id="turnMessage"></div>
-              <div id="playerInfo"></div>
-              <div id="victoryDefeat"></div>
+          <div class="col25 colInfo">
+              <div class="gameInfo" id="joinCode"></div>
+              <div class="gameInfo"><span id="joinLink"></span><span id="playerSlots"></span></div>
+              <div class="gameInfo" id="turnMessage"></div>
+              <div class="gameInfo" id="playerInfo"></div>
+              <div class="gameInfo" id="victoryDefeat"></div>
           </div>
           
 
@@ -212,12 +244,13 @@
     <script>
 
       
-        var auto = false;
-        var timeoutId = null;
-        
-        var action = 'check';
+
         
         var req = new XMLHttpRequest();
+        
+        req.action = 'check';
+        req.auto = false;
+        req.timeoutId = null;
         
         req.onreadystatechange = function() {
             if (req.readyState === 4) {
@@ -235,17 +268,29 @@
                     document.getElementById("playerInfo").innerHTML = response.player_info;
                     document.getElementById("turnMessage").innerHTML = response.turn_message;
                     document.getElementById("victoryDefeat").innerHTML = response.victory_defeat_message;
+                    
+                    
 
                     if (document.getElementById("joinCode").innerHTML !== response.join_code){
                         document.getElementById("joinCode").innerHTML = response.join_code;
-                        document.getElementById("joinLink").innerHTML = "<a href='/join.html?code="+response.join_code+"'>Join this game</a>";
+                        
+                        if (response.join_code){
+                            document.getElementById("joinLink").innerHTML = "<a href='/join.html?code="+response.join_code+"'>Join this game</a> - ";
+                        } else {
+                            document.getElementById("joinLink").innerHTML = '';
+                        }
+                        
+                        
                     }
+                    
+                    document.getElementById("playerSlots").innerHTML = response.player_slots + ' players slots used';
+                    
                 }
                 
                 
                 
                 document.getElementById("gamePage").classList.remove("requestLoading");
-                timeoutId = setTimeout(function(){autoTurn(action);}, 2200);
+                req.timeoutId = setTimeout(function(){autoTurn(req.action);}, 2200);
 
             }
         };
@@ -260,12 +305,13 @@
             
 
                 req.abort();
-                clearTimeout(timeoutId);
-                action = 'check';
-
+                clearTimeout(req.timeoutId);
+                
+                req.action = act;
                 req.open('POST', '/Phprpg/action.php');
                 req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
                 req.send(JSON.stringify({'action':act,'direction':dir}));
+                req.action = 'check';
                 
             }
             
@@ -277,12 +323,12 @@
         }
         
         function autoTurn(act = 'check'){
-            
+            console.log('uuh');
             if (act === 'skip'){
-                action = 'skip';
+                req.action = 'skip';
             }
             document.getElementById("gamePage").classList.add("requestLoading");
-            auto = true;
+            req.auto = true;
             req.open('POST', '/Phprpg/action.php');
             req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
             req.send(JSON.stringify({'action':act}));

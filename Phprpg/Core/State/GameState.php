@@ -60,8 +60,12 @@ class GameState {
         
     }
     
+    public function getPlayerSlots():string{
+        return $this->max_turn_order.'/'.AppStorage::get('cfg','player_limit');
+    }
+    
     public function getJoinCode():?string{
-        if (!empty($_SESSION[$this->game_session_name])){
+        if (!empty($_SESSION[$this->game_session_name]) && $this->max_turn_order < AppStorage::get('cfg','player_limit')){
             return $_SESSION[$this->game_session_name];
         }
         return null;
@@ -259,7 +263,7 @@ class GameState {
 
 
     public function checkIfYourTurnV3(){
-        //the problem with this method is that it returns false if player was killed by mobs during his turn while there are more than 1 players active
+        //the problem with this method is that it returns false if player was killed by mobs during his turn while there are more than 1 players active... or something
         $last_turn_info = AppStorage::get('db')->getLastTurn($this->game_id);
         
 
@@ -361,13 +365,8 @@ class GameState {
             
         //Lo::g("current turn order: after death check $current_turn_order");
         
-        
         if ($current_turn_order == $this->turn_order){
             $this->message = "it's your turn";
-
-            if ($this->world->isPlayerDead($this->player_id)){
-                $this->message = "You are DEAD";
-            }
             return true;
         } else {
             $this->message = "it's NOT your turn";

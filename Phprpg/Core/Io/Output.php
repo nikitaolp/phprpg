@@ -13,10 +13,15 @@ class Output {
     private ?Coordinates $player_coordinates = null;
     private ?string $join_code = null;
     private string $victory_defeat_message = '';
+    private ?string $player_slots = null;
     
     
     public function __construct(){
         
+    }
+    
+    public function setPlayerSlots(string $str):void{
+        $this->player_slots = $str;
     }
     
     public function setWorld(WorldBuilder $world){
@@ -82,6 +87,7 @@ class Output {
         $output['victory_defeat_message'] = $this->victory_defeat_message;
         
         $output['turn_message'] = $this->turn_message;
+        $output['player_slots'] = $this->player_slots;
         $output['log'] = Lo::getString();
         
         echo json_encode($output);

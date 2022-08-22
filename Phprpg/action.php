@@ -94,7 +94,6 @@ if ($state->isGameStarted()){
 
 
 
-
             Lo::g('Before turn insert');
             $state->completeTurn();
             Lo::g('After turn insert');
@@ -126,7 +125,12 @@ if ($state->isGameStarted()){
     
     $output->setJoinCode($state->getJoinCode());
     $output->setTurnMessage($state->getMessage());
-
+    
+    if ($world->isPlayerDead($state->getPlayerId())){
+        $output->setTurnMessage("You are DEAD!!!");
+    }
+    
+    $output->setPlayerSlots($state->getPlayerSlots());
 
 
     $output->setVictoryDefeatMessage($world->getVictoryDefeat()->getMessage());
