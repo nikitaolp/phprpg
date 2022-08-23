@@ -55,6 +55,17 @@ return [
             'xp_value'=>300,
             'xp_to_level_up'=>300
     ],
+    'necromancer'=>[
+            'gfx'=>'necromancer.png',
+            'char'=>'N',
+            'desc'=>'He has a magic wand, and he is insecure',
+            'chance'=>1,
+            'hp'=>500,
+            'dmg'=>150,
+            'team'=>'undead',
+            'xp_value'=>600,
+            'xp_to_level_up'=>600
+    ],
     'thief'=>[
             'gfx'=>'thief.png',
             'char'=>'T',
@@ -65,5 +76,27 @@ return [
             'team'=>'bandits',
             'xp_value'=>150,
             'xp_to_level_up'=>150
+    ],
+    'bandit'=>[
+            'gfx'=>'bandit.png',
+            'char'=>'A',
+            'desc'=>"Has an axe",
+            'chance'=>6,
+            'hp'=>320,
+            'dmg'=>100,
+            'team'=>'bandits',
+            'xp_value'=>350,
+            'xp_to_level_up'=>350
+    ],
+    'baron'=>[
+            'gfx'=>'robber-baron.png',
+            'char'=>'R',
+            'desc'=>"Robber baron. Big strong boi.",
+            'chance'=>1,
+            'hp'=>600,
+            'dmg'=>130,
+            'team'=>'bandits',
+            'xp_value'=>450,
+            'xp_to_level_up'=>450
     ]
 ];

@@ -4,11 +4,30 @@
         <title>Phpgame join</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            
+            body{
+                padding:10px;
+                margin:0;
+                background-color:#0E6840;
+                text-align:center;
+                
+            }
+            
+            .inputlabel{
+                color:gold;
+            }
+            #code{
+                width:400px;
+                max-width:100%;
+                padding:6px;
+            }
+        </style>
     </head>
     <body>
         <form action="/Phprpg/action.php" method="POST">
         <div>
-          <label for="code">Enter invite code</label>
+          <label class="inputlabel" for="code">Enter invite code</label>
           <input name="code" id="code" value="">
         </div>
         <div>

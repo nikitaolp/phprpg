@@ -21,11 +21,25 @@ return  [
             'desc'=>'very tall',
             'chance'=>20
             ],
-        'grass'=>[
+        'grass3'=>[
             'walkable'=>true,
-            'gfx'=>'grass.png',
+            'gfx'=>'grass3.png',
             'char'=>'G',
             'desc'=>'green and blissfull',
-            'chance'=>100
-            ]
+            'chance'=>98
+            ],
+        'grass2'=>[
+                'walkable'=>true,
+                'gfx'=>'grass2.png',
+                'char'=>'G',
+                'desc'=>'green and blissfull',
+                'chance'=>98
+                ],
+        'grass'=>[
+                'walkable'=>true,
+                'gfx'=>'grass.png',
+                'char'=>'G',
+                'desc'=>'green and blissfull',
+                'chance'=>100
+                ]
     ];
