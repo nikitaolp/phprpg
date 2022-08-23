@@ -153,7 +153,7 @@ class DirectionPriority {
                     $enemies['attack'] += $attack_direction;
                     //mad mobs don't care about their  health
                     //others run when their hp is below 30% and lower then the opponents
-                    if ($includeOpposite && (!$this->mob->checkStatus('traitor') && $this->mob->gethealthPercentage()<30 && ($this->mob->getHealth() < $anotherMob->getHealth()))){
+                    if ($includeOpposite && (!$this->mob->checkStatus('traitor') && $this->mob->gethealthPercentage()<20 && ($this->mob->getHealth() < $anotherMob->getHealth()))){
                         
                         $escape_direction = DirectionTools::getOpposite($attack_direction);
                         $enemies['escape'] += $escape_direction;

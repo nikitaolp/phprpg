@@ -26,14 +26,14 @@ return  [
             'gfx'=>'grass3.png',
             'char'=>'G',
             'desc'=>'green and blissfull',
-            'chance'=>98
+            'chance'=>100
             ],
         'grass2'=>[
                 'walkable'=>true,
                 'gfx'=>'grass2.png',
                 'char'=>'G',
                 'desc'=>'green and blissfull',
-                'chance'=>98
+                'chance'=>100
                 ],
         'grass'=>[
                 'walkable'=>true,

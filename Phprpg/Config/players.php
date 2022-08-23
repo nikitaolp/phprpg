@@ -5,7 +5,7 @@ return [
             'char'=>'P',
             'desc'=>'Basic player',
             'chance'=>100,
-            'hp'=>800,
+            'hp'=>500,
             'dmg'=>50,
             'team'=>'players',
             'xp_value'=>60,

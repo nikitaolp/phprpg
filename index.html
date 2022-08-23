@@ -25,6 +25,10 @@
                 flex-direction:row;
             }
             
+            .topButtons{
+                padding:6px;
+            }
+            
             #log{
                 padding:10px;
                 text-align:left;
@@ -210,6 +214,10 @@
                 .container{
                     flex-direction:column;
                 }
+                
+                .zoom1{
+                    display:none;
+                }
             }
         </style>
     </head>
@@ -220,15 +228,14 @@
              <div id="log"></div>
         </div>
         <div class="col50 colGame">
-            <form class='newGameForm' action="/Phprpg/action.php" method="POST">
-                <input type="hidden" id="newgame" name="newgame" value="true">
-                <button>New game</button>
-            </form>
-
-
-              <button onclick="updatePlayArea('skip');">End Turn</button>
-              <button onclick="autoTurn('skip');">Auto Turn</button>
-
+            <div class="topButtons">
+                <form class='newGameForm' action="/Phprpg/action.php" method="POST">
+                    <input type="hidden" id="newgame" name="newgame" value="true">
+                    <button>New game</button>
+                </form>
+                  <button onclick="updatePlayArea('skip');">End Turn</button>
+                  <button onclick="autoTurn('skip');">Auto Turn</button>
+            </div>
               <div id="actionContainer"></div>
               <div id="controls">
                   <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','north');">🡡</button></div>

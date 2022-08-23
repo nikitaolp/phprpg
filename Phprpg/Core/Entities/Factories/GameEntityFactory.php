@@ -10,22 +10,33 @@ abstract class GameEntityFactory {
     
     public function tryToGetRandom():?GameEntity{
         
-        $entityWith100percentChance = null;
+        //$entityWith100percentChance = null;
+        $entitiesWith100percentChance = [];
+        
+        shuffle($this->blueprints);
         
         foreach ($this->blueprints as $k=>$bp){
             
             if ($bp->getChance() == 100){
-                $entityWith100percentChance = clone $bp;
+                //$entityWith100percentChance = clone $bp;
+                $entitiesWith100percentChance[] = clone $bp;
             }
             
             $random = round(mt_rand(1, (round((1 / $bp->getChance()) * 1000))));
-            //echo $bp->getName()," is name ".$bp->getChance()." is chance, and random thing is $random!<br>";
+
             if($random == 1 ){
                 return clone $bp;
             }
             
         }
-        return $entityWith100percentChance;
+        
+        shuffle($entitiesWith100percentChance);
+        
+        if (!empty($entitiesWith100percentChance[0])){
+            return $entitiesWith100percentChance[0];
+        }
+        
+        return null;
     }
     
     abstract function fromArray(array $array);

@@ -130,11 +130,28 @@ class Output {
             foreach($tilesArray as $y => $line){
                 $gfxMap .= '<div class="mapLine">';
                 foreach ($line as $x => $v){
+                    
+                    $zoom_class = 'zoom1';
+                    
+                    if (!empty($this->player_coordinates) && !empty(AppStorage::get('cfg','zoom_in_radius'))){
+                        if ($x >= $this->player_coordinates->getX() - AppStorage::get('cfg','zoom_in_radius') &&
+                            $x <= $this->player_coordinates->getX() + AppStorage::get('cfg','zoom_in_radius') &&
+                            $y >= $this->player_coordinates->getY() - AppStorage::get('cfg','zoom_in_radius') &&
+                            $y <= $this->player_coordinates->getY() + AppStorage::get('cfg','zoom_in_radius')){
+                            $zoom_class = 'zoom2';
+                        }
+                    }
+                    
+                    if (empty($this->player_coordinates)){
+                        $zoom_class = 'zoom0';
+                    }
+                    
+                    
 
                     $tile = $this->world->getTileStorage()->getEntityByXY($x, $y);
 
                     if ($tile){
-                        $gfxMap .= "<div class='tilebg {$tile->getName()} coordX_{$x} coordY_{$y}' >";
+                        $gfxMap .= "<div class='tilebg {$tile->getName()} coordX_{$x} coordY_{$y} {$zoom_class}' >";
                             $mob = $this->world->getMobStorage()->getEntityByXY($x,$y);
                             //$mob = false;
                             if ($mob){
@@ -163,7 +180,7 @@ class Output {
                             }
                         $gfxMap .= '</div>';
                     } else {
-                        $gfxMap .= "<div class='tilebg tileblack coordX_{$x} coordY_{$y}' ><span class='emptyHelper'></span></div>";
+                        $gfxMap .= "<div class='tilebg tileblack coordX_{$x} coordY_{$y} {$zoom_class}' ><span class='emptyHelper'></span></div>";
                     }
 
 

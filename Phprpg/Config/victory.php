@@ -2,7 +2,7 @@
 
 return [
     'victory' => [
-        'player'=>[
+        'Phprpg\Core\Entities\Player'=>[
             'stats'=>['level'=>10],
             'inventory'=>['gold'=>5],
             'coordinates'=>[1,1]
@@ -10,7 +10,7 @@ return [
             ]
         ],
     'defeat' => [
-        'mob' =>[
+        'Phprpg\Core\Entities\Mob' =>[
             'stats'=>['level'=>10],
             'inventory'=>['gold'=>15]
             ],
@@ -19,8 +19,3 @@ return [
         ]
     ]
 ];
-
-/*
- fool of a Took
- * 
- */

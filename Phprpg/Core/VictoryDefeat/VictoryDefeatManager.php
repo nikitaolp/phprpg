@@ -14,6 +14,8 @@ namespace Phprpg\Core\VictoryDefeat;
 use Phprpg\Core\World\WorldBuilder;
 use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
 use Phprpg\Core\{Lo,AppStorage};
+use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
+use Phprpg\Core\Turns\{Coordinates};
 
 class VictoryDefeatManager {
     //put your code here
@@ -81,11 +83,11 @@ class VictoryDefeatManager {
 
             
             switch ($target) {
-                case 'player':
-                    $any_condition_true = $this->checkStorageForCondition($this->world->getMobStorage(),'Player',$conditions);
+                case 'Phprpg\Core\Entities\Player':
+                    $any_condition_true = $this->checkStorageForCondition($this->world->getMobStorage(),'Phprpg\Core\Entities\Player',$conditions);
                     break;
-                case 'mob':
-                    $any_condition_true = $this->checkStorageForCondition($this->world->getMobStorage(),'Mob',$conditions);
+                case 'Phprpg\Core\Entities\Mob':
+                    $any_condition_true = $this->checkStorageForCondition($this->world->getMobStorage(),'Phprpg\Core\Entities\Mob',$conditions);
                     break;
                 case 'players':
                     $any_condition_true = $this->checkPlayers($conditions);
@@ -118,22 +120,23 @@ class VictoryDefeatManager {
                 if ($object_type == get_class($entity) && !$entity->isExpired()){
                     foreach ($conditions as $cond_type => $cond_val_array){
                         
-                        
+                        $type_exp = explode('\\',$object_type);
+                        $type_string = end($type_exp);
                         
                         switch ($cond_type) {
                             case 'stats':
                                 if ($any_condition_true = $this->checkStats($entity,$cond_val_array)){
-                                    $this->vd->setMessage("Condition: {$object_type} stats");
+                                    $this->vd->setMessage("Condition: {$type_string} stats");
                                 }
                                 break;
                             case 'inventory':
                                 if ($any_condition_true = $this->checkInventory($entity,$cond_val_array)){
-                                    $this->vd->setMessage("Condition: {$object_type} inventory contents");
+                                    $this->vd->setMessage("Condition: {$type_string} inventory contents");
                                 }
                                 break;
                             case 'coordinates':
                                 if ($any_condition_true = $this->checkCoordinates(new Coordinates($x,$y),$cond_val_array)){
-                                    $this->vd->setMessage("Condition: {$object_type} coordinates");
+                                    $this->vd->setMessage("Condition: {$type_string} coordinates");
                                 }
                                 break;
                         }

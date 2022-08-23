@@ -5,9 +5,9 @@ return [
         'gfx'=>'heart.png',
         'char'=>'H',
         'desc'=>'Heal up!',
-        'chance'=>3,
+        'chance'=>5,
         'desireable'=>true,
-        'action'=>['maxhp'=>10,'hp'=>100]
+        'action'=>['maxhp'=>50,'hp'=>300]
     ],
     'spikes'=>[
         'gfx'=>'spikes.png',
@@ -15,7 +15,7 @@ return [
         'desc'=>'Spike trap. Bad to step on.',
         'chance'=>1,
         'desireable'=>false,
-        'action'=>['hp'=>-50]
+        'action'=>['hp'=>-200]
     ],
     'gold'=>[
         'gfx'=>'gold.png',

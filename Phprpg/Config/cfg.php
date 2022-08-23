@@ -13,5 +13,6 @@ return [
             
         ],
         'turn_timeout'=>30,
-        'print_radius'=>7
+        'print_radius'=>7,
+        'zoom_in_radius'=>3
     ];
