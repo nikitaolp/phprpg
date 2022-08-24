@@ -58,7 +58,7 @@ class WorldBuilder {
        
     }
     
-    public function addDeadPlayer(int $id){
+    public function addDeadPlayer(int $id):void{
         
         $this->deadPlayers[] = $id;
 
@@ -85,7 +85,7 @@ class WorldBuilder {
         return $this->tileStorage;
     }
     
-    public function addPlayer(int $player_id){
+    public function addPlayer(int $player_id):void{
         
         
         
@@ -162,7 +162,7 @@ class WorldBuilder {
     }
     
     
-    public function topUpEntities(){
+    public function topUpEntities():void{
         $this->tryToSpawnEntities($this->itemStorage,$this->itemAssembler,$this->maxItemCount);
         $this->tryToSpawnEntities($this->mobStorage,$this->mobAssembler,$this->maxMobCount);
     }

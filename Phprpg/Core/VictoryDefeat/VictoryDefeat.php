@@ -15,12 +15,12 @@ class VictoryDefeat {
         
     }
     
-    public function setMessage(string $message){
+    public function setMessage(string $message):void{
         $this->message = $message;
     }
     
     
-    public function getMessage(){
+    public function getMessage():string{
         $return = '';
         if ($this->victory){
             $return = "Victory! ".$this->message;
@@ -34,11 +34,11 @@ class VictoryDefeat {
     }
     
     
-    public function setVictory(bool $victory){
+    public function setVictory(bool $victory):void{
         $this->victory = $victory;
     }
     
-    public function setDefeat(bool $defeat){
+    public function setDefeat(bool $defeat):void{
         $this->defeat = $defeat;
     }
     

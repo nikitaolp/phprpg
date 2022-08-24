@@ -16,7 +16,7 @@ class DirectionTools {
     
     protected static $directions = ['north'=>'north','south'=>'south','east'=>'east','west'=>'west'];
     
-    public static function getRandomDirectionsArray(array $exclude = []){
+    public static function getRandomDirectionsArray(array $exclude = []):array{
         $shuffled = self::$directions; 
         uksort($shuffled, function() { return rand() <=> rand(); });
         
@@ -27,7 +27,7 @@ class DirectionTools {
         return $shuffled;
     }
     
-    public static function getRandom(){
+    public static function getRandom():string{
         $dir = self::$directions; 
         
         return $dir[array_rand($dir)];
@@ -54,7 +54,7 @@ class DirectionTools {
         return $coo;
     }
     
-    public static function surroundingTiles(Coordinates $coord,int $worldWidth, int $worldHeight){
+    public static function surroundingTiles(Coordinates $coord,int $worldWidth, int $worldHeight):array{
         $surroundingTilesCoordArray = [];
 
         for ($y = $coord->getY()-5; $y<=$coord->getY()+5; $y++){
@@ -169,101 +169,60 @@ class DirectionTools {
         return $ret;
     }
     
-    private static function checkNorthMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight,$debug = false){
+    private static function checkNorthMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if ($mobToCheck->getY()+$sight >= $mobCoord->getY()){
-            $dbg = '';
-            if ($debug) $dbg = 'color:red;';
-            //echo "<p style='$dbg'>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in North ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
             return true;
-        } 
+        }
+        return false;
     }
     
-    private static function checkSouthMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight,$debug = false){
+    private static function checkSouthMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if ($mobToCheck->getY()-$sight <= $mobCoord->getY()){
-            $dbg = '';
-            if ($debug) $dbg = 'color:red;';
-             //echo "<p style='$dbg'>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in South ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
              return true;
         } 
-
+        return false;
     }
     
-    private static function checkWestMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight,$debug = false){
+    private static function checkWestMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if ($mobToCheck->getX()+$sight >= $mobCoord->getX()){
-            $dbg = '';
-            if ($debug) $dbg = 'color:red;';
-             //echo "<p style='$dbg'>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in West ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
              return true;
-        } 
+        }
+        return false;
     }
     
-    private static function checkEastMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight,$debug = false){
+    private static function checkEastMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if ($mobToCheck->getX()-$sight <= $mobCoord->getX()){
-            $dbg = '';
-            if ($debug) $dbg = 'color:red;';
-             //echo "<p style='$dbg'>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in East ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
              return true;
-        } 
+        }
+        return false;
     }
     
-    private static function checkSouthWestMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
+    private static function checkSouthWestMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if (self::checkSouthMobInSight($mobCoord, $mobToCheck, $sight,true) && self::checkWestMobInSight($mobCoord, $mobToCheck, $sight,true)){
-            //echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in South West ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
             return true;
-        } 
+        }
+        return false;
     }
     
-    private static function checkSouthEastMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
+    private static function checkSouthEastMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if (self::checkSouthMobInSight($mobCoord, $mobToCheck, $sight,true) && self::checkEastMobInSight($mobCoord, $mobToCheck, $sight,true)){
-            //echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in South East ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
             return true;
-        } 
+        }
+        return false;
     }
     
     
-    private static function checkNorthWestMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
+    private static function checkNorthWestMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if (self::checkNorthMobInSight($mobCoord, $mobToCheck, $sight,true) && self::checkWestMobInSight($mobCoord, $mobToCheck, $sight,true)){
-            //echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in North West ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
             return true;
-        } 
+        }
+        return false;
     }
     
-    private static function checkNorthEastMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
+    private static function checkNorthEastMobInSight(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight):bool{
         if (self::checkNorthMobInSight($mobCoord, $mobToCheck, $sight,true) && self::checkEastMobInSight($mobCoord, $mobToCheck, $sight,true)){
-            //echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one in North East ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
             return true;
-        } 
-    }
-
-    
-    /*
-    public function checkNorthEast(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
-        
-        if (($mobCoord!=$mobToCheck) && ($mobCoord->getX()+$sight >= $mobToCheck->getX()) && ($mobCoord->getY()-$sight >= $mobToCheck->getY())){
-            echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one at North East ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
         }
+        return false;
     }
-    
-    public function checkNorthWest(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
-        
-        if (($mobCoord!=$mobToCheck) && ($mobCoord->getX()-$sight >= $mobToCheck->getX()) && ($mobCoord->getY()-$sight > $mobToCheck->getY())){
-            echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one at North West ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
-        }
-    }
-    
-    public function checkSouthEast(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
-        
-        if (($mobCoord!=$mobToCheck) && ($mobCoord->getX()+$sight > $mobToCheck->getX()) && ($mobCoord->getY()+$sight >= $mobToCheck->getY())){
-            echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one at South East ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
-        }
-    }
-    
-    public function checkSouthWest(Coordinates $mobCoord, Coordinates $mobToCheck,int $sight){
-        
-        if (($mobCoord!=$mobToCheck) && ($mobCoord->getX()+$sight > $mobToCheck->getX()) && ($mobCoord->getY()+$sight > $mobToCheck->getY())){
-            echo "<p>this mob ({$mobCoord->getX()} {$mobCoord->getY()}) sees another one at South West ({$mobToCheck->getX()} {$mobToCheck->getY()})</p>";
-        }
-    }
-     * *
-     */
 }

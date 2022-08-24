@@ -53,7 +53,7 @@ class Mob extends GameEntity{
         return $this->moveDirection;
     }
     
-    public function setDirection(?string $string){
+    public function setDirection(?string $string):void{
         $this->moveDirection = $string;
     }
     
@@ -90,7 +90,7 @@ class Mob extends GameEntity{
         $this->maxhp += $hp;
     }
     
-    public function affectXp(int $xp){
+    public function affectXp(int $xp):void{
         $this->xp_earned += $xp;
         
         $xp_to_level_up = $this->xp_to_level_up;
@@ -123,7 +123,7 @@ class Mob extends GameEntity{
         return $this->xp_earned;
     }
     
-    public function levelUp(int $xp_to_level_up){
+    public function levelUp(int $xp_to_level_up):void{
 
             $this->xp_earned -= $xp_to_level_up;
             if ($this->xp_earned <0) {
@@ -166,7 +166,7 @@ class Mob extends GameEntity{
         unset($this->statusEffects[$status]);
     }
     
-    public function betrayalCheck(){
+    public function betrayalCheck():void{
         //simple way to control population - mobs have a small chance to "go mad" and attack their allies, thus letting repopulation spawn new mobs
         if (rand(1,200) == 1){
             $this->team = $this->nickname;
@@ -204,7 +204,7 @@ class Mob extends GameEntity{
         }
     }
     
-    public function pickupItem(Item $item){
+    public function pickupItem(Item $item):void{
         $actionArray = $item->getAction();
         foreach ($actionArray as $prop=>$act){
             if ($prop == 'inventory'){

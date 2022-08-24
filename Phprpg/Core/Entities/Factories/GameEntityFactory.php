@@ -39,6 +39,6 @@ abstract class GameEntityFactory {
         return null;
     }
     
-    abstract function fromArray(array $array);
+    abstract function fromArray(array $array):void;
     
 }

@@ -10,7 +10,7 @@ class AppStorage {
         static::$storage[$k]=$v;
     }
     
-    public static function get($k,$v=null){
+    public static function get($k,$v=null):mixed{
 
         if (array_key_exists($k, static::$storage)){
 

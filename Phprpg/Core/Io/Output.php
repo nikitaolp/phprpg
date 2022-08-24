@@ -24,11 +24,11 @@ class Output {
         $this->player_slots = $str;
     }
     
-    public function setWorld(WorldBuilder $world){
+    public function setWorld(WorldBuilder $world):void{
         $this->world = $world;
     }
     
-    public function setCoordinates(?Coordinates $coord){
+    public function setCoordinates(?Coordinates $coord):void{
         $this->player_coordinates = $coord;
     }
     
@@ -37,11 +37,11 @@ class Output {
         $this->turn_message = $str;
     }
     
-    public function setVictoryDefeatMessage(string $str){
+    public function setVictoryDefeatMessage(string $str):void{
         $this->victory_defeat_message = $str;
     }
     
-    public function setJoinCode(?string $join_code){
+    public function setJoinCode(?string $join_code):void{
         $this->join_code = $join_code;
     }
     
@@ -67,7 +67,7 @@ class Output {
         return $str;
     }
     
-    public function printJson(){
+    public function printJson():void{
         $output['player_info'] = '';
         if($this->player_coordinates){
             if ($radius = AppStorage::get('cfg','print_radius')){

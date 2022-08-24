@@ -16,12 +16,12 @@ class Lo {
         self::$log[] = $store;
     }
     
-    public static function print(){
+    public static function print():void{
         echo $this->getString();
     }
     
     
-    public static function getString(){
+    public static function getString():string{
         $output = self::$log;
         $output_str = '';
         if (!empty($output[0]['time'])){

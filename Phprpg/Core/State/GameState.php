@@ -86,7 +86,7 @@ class GameState {
         return $this->message;
     }
     
-    private function newGame(){
+    private function newGame():void{
         $this->quitGame();
         $this->createGame();
         header("Location: /");
@@ -94,7 +94,7 @@ class GameState {
     }
     
     
-    private function joinGame(string $session){
+    private function joinGame(string $session):void{
         if (AppStorage::get('db')->getGame($session)){
             $_SESSION[$this->game_session_name] = $session; 
             unset($_SESSION[$this->player_session_name]);
@@ -104,7 +104,7 @@ class GameState {
     }
     
     
-    public function checkIfLastTurn(){
+    public function checkIfLastTurn():bool{
         
         $max = $this->max_turn_order;
         
@@ -139,7 +139,7 @@ class GameState {
          $this->world = $world;
     }
     
-    public function getPlayerId(){
+    public function getPlayerId():?int{
         return $this->player_id;
     }
     
@@ -197,7 +197,7 @@ class GameState {
         //insert game into database, set ID, 
     }
     
-    private function findMaxTurnOrder(){
+    private function findMaxTurnOrder():?int{
         $last_player = AppStorage::get('db')->getLastPlayer($this->game_id);
         if ($last_player){
             $this->max_turn_order = $last_player['turn_order'];
@@ -205,7 +205,7 @@ class GameState {
         return $this->max_turn_order;
     }
     
-    private function initPlayer(int $game_id){
+    private function initPlayer(int $game_id):bool{
         
         
         if(!empty($_SESSION[$this->player_session_name])){
@@ -262,7 +262,7 @@ class GameState {
     
 
 
-    public function checkIfYourTurnV3(){
+    public function checkIfYourTurnV3():bool{
         //the problem with this method is that it returns false if player was killed by mobs during his turn while there are more than 1 players active... or something
         $last_turn_info = AppStorage::get('db')->getLastTurn($this->game_id);
         

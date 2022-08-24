@@ -28,7 +28,7 @@ class Item extends GameEntity{
         return $this->amount;
     }
     
-    public function add(int $addAmount){
+    public function add(int $addAmount):void{
         $this->amount += $addAmount;
     }
     

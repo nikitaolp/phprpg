@@ -6,7 +6,7 @@ use Phprpg\Core\Entities\Tile;
 class TileFactory extends GameEntityFactory {
     //put your code here
     
-    public function fromArray(array $array) {
+    public function fromArray(array $array):void {
         foreach ($array as $name=>$tileArray){
             $this->blueprints[$name] = new Tile(
                     $name,

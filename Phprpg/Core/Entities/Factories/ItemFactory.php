@@ -5,7 +5,7 @@ use Phprpg\Core\Entities\Item;
 class ItemFactory extends GameEntityFactory {
     //put your code here
     
-    public function fromArray(array $array) {
+    public function fromArray(array $array):void {
         foreach ($array as $name=>$itemArray){
             $this->blueprints[$name] = new Item(
                     $name,

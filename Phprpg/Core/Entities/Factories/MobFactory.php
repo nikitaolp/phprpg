@@ -5,7 +5,7 @@ use Phprpg\Core\Entities\{GameEntity,Mob};
 class MobFactory extends GameEntityFactory {
     //put your code here
     
-    public function fromArray(array $array) {
+    public function fromArray(array $array):void {
         foreach ($array as $name=>$mobArray){
             $this->blueprints[$name] = new Mob(
                     $name,

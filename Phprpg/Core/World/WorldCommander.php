@@ -36,7 +36,7 @@ class WorldCommander {
         return $this->current_player_coordinates;
     }
     
-    public function findPlayerCoordinates(){
+    public function findPlayerCoordinates():void{
 
         $mobs = $this->world->getMobs();
         
@@ -82,7 +82,7 @@ class WorldCommander {
         }
     }
     
-    public function playerTurn(){
+    public function playerTurn():void{
         if ($mobCoords = $this->current_player_coordinates){
             $mob = $this->world->getMobStorage()->getEntity($mobCoords);
 
@@ -106,7 +106,7 @@ class WorldCommander {
 
 
     
-    public function mobTurn(){
+    public function mobTurn():void{
         
         //new main loop.
         //goals: most of the stuff should happen in this loop
@@ -187,7 +187,7 @@ class WorldCommander {
         return false;
     }
     
-    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates){
+    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):bool{
         if ($this->world->getTileStorage()->checkTileWalkability($newCoordinates) && !$this->world->getMobStorage()->getEntity($newCoordinates)){
 
             $mob->setDirection($direction);
@@ -207,7 +207,7 @@ class WorldCommander {
     }
     
  
-    public function addPlayer(){
+    public function addPlayer():void{
         if (empty($this->current_player_coordinates)){
             $this->world->addPlayer($this->player_id);
         }

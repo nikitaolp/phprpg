@@ -167,7 +167,7 @@ class DirectionPriority {
         return $enemies;
     }
     
-    private function items(int $sight, bool $includeOpposite){
+    private function items(int $sight, bool $includeOpposite):array{
         if ($sight == 1){
             $sur_items = $this->itemStorage->getDirectlyAccessibleEntities($this->mobCoords);
         } else {

@@ -57,7 +57,7 @@ class VictoryDefeatManager {
         return $this->vd;
     }
     
-    public function check(){
+    public function check():void{
 
         
         if (!$this->vd->getVictory() && !$this->vd->getDefeat()){
@@ -150,7 +150,7 @@ class VictoryDefeatManager {
         return false;
     }
     
-    private function checkPlayers(array $conditions){
+    private function checkPlayers(array $conditions):bool{
         $condition_bool = false;
         //i guess i will just make a singel check and be done with this
         if (isset($conditions['all_dead'])){
@@ -161,7 +161,7 @@ class VictoryDefeatManager {
         return $condition_bool;
     }
     
-    private function checkStats(GameEntity $entity, array $stat_array){
+    private function checkStats(GameEntity $entity, array $stat_array):bool{
         $condition_bool = false;
         
         foreach ($stat_array as $stat=>$val){
@@ -174,7 +174,7 @@ class VictoryDefeatManager {
         return $condition_bool;
     }
     
-    private function checkInventory(GameEntity $entity, array $inventory_cond){
+    private function checkInventory(GameEntity $entity, array $inventory_cond):bool{
         $ent_invent = $entity->getInventory();
         $condition_bool = false;
         
@@ -192,7 +192,7 @@ class VictoryDefeatManager {
     }
     
     
-    private function checkCoordinates(Coordinates $mobCoord, array $checkCoordArr){
+    private function checkCoordinates(Coordinates $mobCoord, array $checkCoordArr):bool{
 
         $condition_bool = false;
         if (isset($checkCoordArr[0]) && isset($checkCoordArr[1])){

@@ -12,7 +12,7 @@ class Attack {
         $this->fight();
     }
     
-    private function fight(){
+    private function fight():void{
         $this->defender->affectHp(-1*$this->attacker->getDmg());
         $this->attacker->addStatus('attack');
         if ($this->defender->isExpired()){

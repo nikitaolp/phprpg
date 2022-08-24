@@ -5,7 +5,7 @@ use Phprpg\Core\Entities\Player;
 class PlayerFactory extends MobFactory{
     //put your code here
     
-    public function fromArray(array $array) {
+    public function fromArray(array $array):void {
         foreach ($array as $name=>$mobArray){
             $this->blueprints[$name] = new Player(
                     $name,
