@@ -169,12 +169,12 @@ class Output {
                                     style='--health-width:{$mob->getHealthPercentage()}%'><img 
                                     title='{$mob->getNickname()}, lvl. {$mob->getLevel()} $inv' 
                                     class='mobImg direction_{$mob->getDirection()} coordX_{$x} coordY_{$y} {$mob->getStatusClasses()}' 
-                                    src='/Phprpg/resources/gfx/{$mob->getGfx()}'></span>";
+                                    src='/Phprpg/Resources/Gfx/{$mob->getGfx()}'></span>";
                             } else if ($item = $this->world->getItemStorage()->getEntityByXY($x,$y)){
                                 $gfxMap .= "<span class='itemHelper'><img 
                                     title='{$item->getName()}' 
                                     class='mobImg coordX_{$x} coordY_{$y}' 
-                                    src='/Phprpg/resources/gfx/{$item->getGfx()}'></span>";
+                                    src='/Phprpg/Resources/Gfx/{$item->getGfx()}'></span>";
                             } else {
                                 $gfxMap .= "<span class='emptyHelper'></span>";
                             }
