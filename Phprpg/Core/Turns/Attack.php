@@ -16,7 +16,7 @@ class Attack {
         $this->defender->affectHp(-1*$this->attacker->getDmg());
         $this->attacker->addStatus('attack');
         if ($this->defender->isExpired()){
-            Lo::g("{$this->attacker->getNickname()} killed {$this->defender->getNickname()}");
+            Lo::gG("<span class='logColor1'>{$this->attacker->getNickname()}</span> killed <span class='logColor2'>{$this->defender->getNickname()}</span>");
             $this->attacker->affectXp($this->defender->getXpValue());
             $this->attacker->receiveInventory($this->defender->getInventory());
         }

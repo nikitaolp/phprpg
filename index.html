@@ -18,6 +18,7 @@
                 padding:0;
                 margin:0;
                 background-color:#0E6840;
+                color:appworkspace;
             }
             
             .container{
@@ -30,17 +31,34 @@
                 padding:6px;
             }
             
-            #log{
-                padding:10px;
+            #game_log,#tech_log{
+                
                 text-align:left;
                 color:#a3a361;
                 overflow-wrap: break-word;
             }
             
-            #joinCode{overflow-wrap: break-word;}
+            #game_log p,#tech_log p{
+                margin-top:0px;
+            }
+            
+            .logHeader{
+                margin-top:7px;
+                margin-bottom:7px;
+                color:#a392cd;
+            }
+            
+            #gameLogHeader{}
+            
+            #joinCode{
+                overflow-wrap: break-word;
+                color:navajowhite;
+            }
             
             .col25{
                 width:25%;
+                padding:10px;
+                box-sizing: border-box;
             }
             
             .col50{
@@ -54,13 +72,21 @@
                 
             }
             
+            .hidden{
+                display:none;
+            }
+            .visible{
+                display:block;
+            }
             
             #playerInfo{
                 color:#d9d986;
             }
             
             #turnMessage{
-                color:red;
+                color:#bdff66;
+                text-transform:uppercase;
+                font-size:18px;
             }
             
             #actionContainer{
@@ -69,7 +95,7 @@
             }
             
             #joinLink a,#playerSlots{
-                color:pink;
+                color:salmon;
             }
             
             #victoryDefeat{
@@ -78,7 +104,8 @@
             }
             
             .gameInfo{
-                margin-bottom:15px;
+                margin-top:7px;
+                margin-bottom:7px;
             }
             
             .mapLine {
@@ -192,6 +219,49 @@
             .requestLoading{
                 cursor:wait;
             }
+            
+            .logColor1{
+                color:salmon;
+            }
+            
+            .logColor2{
+                color:orange;
+            }
+            
+            .logColor3{
+                color:lightgray;
+            }
+            
+            #spinner{
+                height: 8px;
+                width: 8px;
+                visibility:hidden;
+                vertical-align: middle;
+                -webkit-animation: spin 2s linear infinite;
+                animation: spin 2s linear infinite;
+                display:inline-block;
+                border-top:4px solid #d9d986;
+                border-bottom:4px solid #a392cd;
+                border-left:4px solid #ff5b5b;
+                border-right:4px solid orange;
+            }
+            
+            #spinner.show{
+                visibility:visible;
+            }
+            
+            @-webkit-keyframes spin {
+                100% {
+                  -webkit-transform: rotate(360deg);
+                          transform: rotate(360deg);
+                }
+            }
+            @keyframes spin {
+                100% {
+                  -webkit-transform: rotate(360deg);
+                          transform: rotate(360deg);
+                }
+            }
                 
            
             @media (max-width: 980px){
@@ -226,7 +296,10 @@
       <div class="container">
           
         <div class="col25 colLog">
-             <div id="log"></div>
+            <h4 class="logHeader" id="gameLogHeader">Game log</h4>
+            <div id="game_log"></div>
+            <h4 class="logHeader">Tech log</h4>
+            <div id="tech_log"></div>
         </div>
         <div class="col50 colGame">
             <div class="topButtons">
@@ -236,6 +309,7 @@
                 </form>
                   <button onclick="updatePlayArea('skip');">End Turn</button>
                   <button onclick="autoTurn('skip');">Auto Turn</button>
+                  <div id="spinner" class='hidden'></div>
             </div>
               <div id="actionContainer"></div>
               <div id="controls">
@@ -247,11 +321,13 @@
             
         </div>
           <div class="col25 colInfo">
-              <div class="gameInfo" id="joinCode"></div>
               <div class="gameInfo"><span id="joinLink"></span><span id="playerSlots"></span></div>
               <div class="gameInfo" id="turnMessage"></div>
               <div class="gameInfo" id="playerInfo"></div>
               <div class="gameInfo" id="victoryDefeat"></div>
+              <div class="gameInfo hidden" id="joinCodeHeader">Join code (actually, just copy Join Game Link instead): </div>
+              <div class="gameInfo" id="joinCode"></div>
+              <div class="gameInfo" > Controls - WASD to walk, attack enemies by walking into them</div>
           </div>
           
 
@@ -280,32 +356,57 @@
                 
                 if (response){
                     document.getElementById("actionContainer").innerHTML = response.map;
-                    document.getElementById("log").innerHTML = response.log;
+                    
+                    if (response.game_log !== ''){
+                        
+                        if (response.game_log !==document.getElementById("game_log").innerHTML){
+                            document.getElementById("game_log").innerHTML = response.game_log;
+                            
+                            document.getElementById("gameLogHeader").classList.remove("hidden");
+                            document.getElementById("gameLogHeader").classList.add("visible");
+                        }
+                        
+                    } else if (document.getElementById("game_log").innerHTML === ''){
+                        
+                        document.getElementById("gameLogHeader").classList.remove("visible");
+                        document.getElementById("gameLogHeader").classList.add("hidden");
+                    }
+                    
+                    
+                    document.getElementById("tech_log").innerHTML = response.tech_log;
+                    
+                    
+                    
                     document.getElementById("playerInfo").innerHTML = response.player_info;
                     document.getElementById("turnMessage").innerHTML = response.turn_message;
                     document.getElementById("victoryDefeat").innerHTML = response.victory_defeat_message;
                     
                     
+                  
 
                     if (document.getElementById("joinCode").innerHTML !== response.join_code){
                         document.getElementById("joinCode").innerHTML = response.join_code;
                         
                         if (response.join_code){
-                            document.getElementById("joinLink").innerHTML = "<a href='/join.html?code="+response.join_code+"'>Join this game</a> - ";
+                            document.getElementById("joinLink").innerHTML = "<a href='/join.html?code="+response.join_code+"'>Join game link</a> - ";
+                            
+                            document.getElementById("joinCodeHeader").classList.remove("hidden");
+                            document.getElementById("joinCodeHeader").classList.add("visible");
                         } else {
                             document.getElementById("joinLink").innerHTML = '';
                         }
                         
-                        
+                        document.getElementById("playerSlots").innerHTML = response.player_slots + ' players slots used';
                     }
                     
-                    document.getElementById("playerSlots").innerHTML = response.player_slots + ' players slots used';
+                    
                     
                 }
                 
                 
                 
                 document.getElementById("gamePage").classList.remove("requestLoading");
+                document.getElementById("spinner").classList.remove("show");
                 req.timeoutId = setTimeout(function(){autoTurn(req.action);}, 2200);
 
             }
@@ -318,7 +419,7 @@
             
             if (!request_states.includes(req.readyState)) {
                 document.getElementById("gamePage").classList.add("requestLoading");
-            
+                document.getElementById("spinner").classList.add("show");
 
                 req.abort();
                 clearTimeout(req.timeoutId);

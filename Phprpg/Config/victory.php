@@ -11,8 +11,8 @@ return [
         ],
     'defeat' => [
         'Phprpg\Core\Entities\Mob' =>[
-            'stats'=>['level'=>10],
-            'inventory'=>['gold'=>15]
+            'stats'=>['level'=>20],
+            'inventory'=>['gold'=>20]
             ],
         'players' => [
             'all_dead'=>true

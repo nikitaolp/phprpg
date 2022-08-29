@@ -102,7 +102,7 @@ class Mob extends GameEntity{
             }
         }
         
-        Lo::g($this->nickname." (level {$this->level}) got {$xp} xp , has {$this->xp_earned} in total, and needs {$xp_to_level_up} to level up");
+        Lo::gG("<span class='logColor1'>".$this->nickname."</span> (level {$this->level}) got {$xp} xp , has {$this->xp_earned} in total, and needs {$xp_to_level_up} to level up");
         
         if ($this->xp_earned >= $xp_to_level_up && ($this->level < 30)){
             $this->levelUp($xp_to_level_up);
@@ -170,7 +170,7 @@ class Mob extends GameEntity{
         //simple way to control population - mobs have a small chance to "go mad" and attack their allies, thus letting repopulation spawn new mobs
         if (rand(1,200) == 1){
             $this->team = $this->nickname;
-            Lo::g($this->nickname.' went mad and betrayed their comrades');
+            Lo::gG("<span class='logColor1'>".$this->nickname.'</span> went mad and betrayed their comrades');
             $this->addStatus('traitor');
         }
         
@@ -206,6 +206,9 @@ class Mob extends GameEntity{
     
     public function pickupItem(Item $item):void{
         $actionArray = $item->getAction();
+        
+        Lo::gG('<span class="logColor1">'.$this->nickname.'</span> has interacted with <span class="logColor3">'.$item->getName().'</span> item');
+        
         foreach ($actionArray as $prop=>$act){
             if ($prop == 'inventory'){
                 $this->addToInventory($item);
@@ -215,7 +218,6 @@ class Mob extends GameEntity{
                 $method = 'affect'.mb_convert_case($prop, MB_CASE_TITLE, "UTF-8");
                 if (method_exists($this, $method)){
                     $this->$method($act);
-                    //Lo::g($this->nickname.' '.$prop.' changed by '.$act.' and now is '.$this->$prop);
                     $item->expire();
                 } else {
                     throw new Exception("No such property, something bad in item config");
@@ -223,6 +225,8 @@ class Mob extends GameEntity{
                 
             }
         }
+        
+        
     }
     
 }

@@ -143,8 +143,6 @@ if ($state->isGameStarted()){
 
 $mem = memory_get_usage()/1024;
 
-
-
 $total_time = microtime(true) - $time_start;
 
 

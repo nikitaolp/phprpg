@@ -88,7 +88,8 @@ class Output {
         
         $output['turn_message'] = $this->turn_message;
         $output['player_slots'] = $this->player_slots;
-        $output['log'] = Lo::getString();
+        $output['game_log'] = Lo::getString('game_log');
+        $output['tech_log'] = Lo::getString('tech_log',true);
         
         echo json_encode($output);
         die();
