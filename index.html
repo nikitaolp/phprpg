@@ -68,7 +68,7 @@
             #controls{
                 margin:auto;
                 margin-top:20px;
-                width:50%;
+                width:90%;
                 
             }
             
@@ -207,9 +207,11 @@
                 text-align:center;
             }
 
-            .controlButton{
-                width:50px;
+            .controlButton,.controlButtonStub{
+                width:60px;
                 height:24px;
+                display:inline-block;
+                vertical-align: middle;
             }
 
             .newGameForm{
@@ -289,6 +291,11 @@
                 .zoom1{
                     display:none;
                 }
+                
+                .controlButton,.controlButtonStub{
+                    width:33%;
+                    height:50px;
+                }
             }
         </style>
     </head>
@@ -307,14 +314,14 @@
                     <input type="hidden" id="newgame" name="newgame" value="true">
                     <button>New game</button>
                 </form>
-                  <button onclick="updatePlayArea('skip');">End Turn</button>
+                  <button onclick="updatePlayArea('skip');">Skip Turn</button>
                   <button onclick="autoTurn('skip');">Auto Turn</button>
                   <div id="spinner" class='hidden'></div>
             </div>
               <div id="actionContainer"></div>
               <div id="controls">
                   <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','north');">⬆️️</button></div>
-                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','west');">⬅️</button><button class="controlButton" onclick="updatePlayArea('move','skip');">SKIP</button><button class="controlButton" onclick="updatePlayArea('move','east');">➡️</button></div>
+                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','west');">⬅️</button><div class="controlButtonStub"></div><button class="controlButton" onclick="updatePlayArea('move','east');">➡️</button></div>
                   <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','south');">⬇️</button></div>
                   <div></div>
               </div>
@@ -396,9 +403,11 @@
                             document.getElementById("joinLink").innerHTML = '';
                         }
                         
+                        
+                    }
+                    if (response.join_code){
                         document.getElementById("playerSlots").innerHTML = response.player_slots + ' players slots used';
                     }
-                    
                     
                     
                 }

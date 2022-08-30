@@ -74,7 +74,7 @@ class Lo {
                 $debug_string = '';
                 
                 if ($debug){
-                    $debug_string = " (since first log: {$time_since_beginning}s; since prev log: {$time_since_previous_entry}s)";
+                    $debug_string = " (since start:{$time_since_beginning}s; prev_log:{$time_since_previous_entry}s)";
                 }
                 
                 $output_str .= "<p>{$entry['txt']}{$debug_string}</p>";

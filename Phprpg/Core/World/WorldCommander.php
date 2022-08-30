@@ -76,7 +76,7 @@ class WorldCommander {
     
     private function checkIfPlayerIsDead():void{
         $player = $this->world->getMobStorage()->getEntity($this->current_player_coordinates);
-        Lo::g($this->current_player_coordinates);
+        
         if (!$player || $player->isExpired()){
             $this->world->addDeadPlayer($player->getId());
         }

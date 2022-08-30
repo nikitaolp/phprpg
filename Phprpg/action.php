@@ -26,7 +26,7 @@ AppStorage::set('mobs',require 'Config/mobs.php');
 AppStorage::set('players',require 'Config/players.php');
 AppStorage::set('items',require 'Config/items.php');
 
-AppStorage::set('db', new Database(require 'cred.php')); //should be env file, figure this out 
+AppStorage::set('db', new Database(require 'cred.php'));
 
 
 
@@ -46,16 +46,9 @@ if ($state->isGameStarted()){
                     new MobStorage(), 
                     new GameEntityStorage() 
                 );
-        
-        
-        
-        //$world = AppStorage::get(WorldBuilder::class);
+
         $world->build();
         $state->setWorld($world);
-        
-        
-        
-        //it's a mess
         
     }
     
@@ -79,15 +72,18 @@ if ($state->isGameStarted()){
     
 
     
+    $my_turn = $state->checkIfYourTurnV3();
+    $output->setTurnMessage($state->getMessage());
     
-
-    if ($my_turn = $state->checkIfYourTurnV3()){
+    if ($my_turn){
         
 
         if (in_array($input_action,['move','skip']) || $world->isPlayerDead($state->getPlayerId())){
 
             $worldCommander->playerTurn();
-
+            
+            $output->setTurnMessage("it's NOT your turn");
+            
             if ($state->checkIfLastTurn()){
                 $worldCommander->mobTurn();
             }
@@ -124,7 +120,7 @@ if ($state->isGameStarted()){
     $output->setCoordinates($worldCommander->getPlayerCoordinates());
     
     $output->setJoinCode($state->getJoinCode());
-    $output->setTurnMessage($state->getMessage());
+    
     
     if ($world->isPlayerDead($state->getPlayerId())){
         $output->setTurnMessage("You are DEAD!!!");
@@ -135,7 +131,7 @@ if ($state->isGameStarted()){
 
     $output->setVictoryDefeatMessage($world->getVictoryDefeat()->getMessage());
     
-    Lo::g("<p>mobs left ".$world->getMobStorage()->getAllEntityCount()."</p>");
+    Lo::g("Mobs left ".$world->getMobStorage()->getAllEntityCount());
 }
 
 
@@ -146,11 +142,6 @@ $mem = memory_get_usage()/1024;
 $total_time = microtime(true) - $time_start;
 
 
-Lo::g("<p>{$mem}kb used; total runtime $total_time</p>");
+Lo::g("{$mem}kb used; total runtime $total_time");
 
 echo $output->printJson();
-
-
-//hey git
-
-

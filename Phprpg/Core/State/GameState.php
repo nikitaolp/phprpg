@@ -44,7 +44,7 @@ class GameState {
 
             Lo::g("Game ID {$this->game_id}");
             Lo::g("Player ID {$this->player_id}");
-            Lo::g("Turn order {$this->turn_order}");
+            Lo::g("Player turn order {$this->turn_order}");
 
             if (!$this->max_turn_order){
                 $order = $this->findMaxTurnOrder();
@@ -299,7 +299,7 @@ class GameState {
                
                 $number_of_players = $this->max_turn_order;
                 
-                Lo::g("since last turn:$skipped_time turns skipped: $number_of_turns_skipped players: $number_of_players");
+                Lo::g("Since last turn: $skipped_time seconds, turns skipped: $number_of_turns_skipped, players: $number_of_players");
                 
                 //when was the last time i have unironically used while loop? isn't it made for such cases? whatever.
                 for ($i = $current_turn_order;$i<=$number_of_turns_skipped;$i++){
@@ -364,6 +364,8 @@ class GameState {
             
             
         //Lo::g("current turn order: after death check $current_turn_order");
+        
+        Lo::g("Current turn order: ".$current_turn_order);
         
         if ($current_turn_order == $this->turn_order){
             $this->message = "it's your turn";
