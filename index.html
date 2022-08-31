@@ -116,7 +116,6 @@
 
             .tilebg{
                 aspect-ratio: 1/ 1;
-                display: flex;
                 background-size: cover;
             }
 
@@ -174,7 +173,46 @@
             .mountain{
                 background-image:url(/Phprpg/Resources/Gfx/mountain3.png);
             }
-
+            
+            .grass-stones{
+                background-image:url(/Phprpg/Resources/Gfx/grass-stones.png);
+            }
+            .flowers-yellow{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-yellow.png);
+            }
+            .flowers-blue{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-blue.png);
+            }
+            .flowers-blue2{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-blue2.png);
+            }
+            .flowers-white{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-white.png);
+            }
+            .flowers-white2{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-white2.png);
+            }
+            .flowers-red{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-red.png);
+            }
+            .flowers-red2{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-red2.png);
+            }
+            .flowers-red3{
+                background-image:url(/Phprpg/Resources/Gfx/grass-flowers-red3.png);
+            }
+            .boulders{
+                background-image:url(/Phprpg/Resources/Gfx/boulders.png);
+            }
+            .boulders2{
+                background-image:url(/Phprpg/Resources/Gfx/boulders2.png);
+            }
+            .sticks{
+                background-image:url(/Phprpg/Resources/Gfx/dead-trees.png);
+            }
+            .big-tree{
+                background-image:url(/Phprpg/Resources/Gfx/big-tree.png);
+            }
             .emptyHelper{
                 display: block;
             }
@@ -385,7 +423,10 @@
                     
                     
                     document.getElementById("playerInfo").innerHTML = response.player_info;
+                    
                     document.getElementById("turnMessage").innerHTML = response.turn_message;
+                    
+                    
                     document.getElementById("victoryDefeat").innerHTML = response.victory_defeat_message;
                     
                     

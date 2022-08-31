@@ -82,7 +82,6 @@ if ($state->isGameStarted()){
 
             $worldCommander->playerTurn();
             
-            $output->setTurnMessage("it's NOT your turn");
             
             if ($state->checkIfLastTurn()){
                 $worldCommander->mobTurn();
