@@ -87,6 +87,7 @@
                 color:#bdff66;
                 text-transform:uppercase;
                 font-size:18px;
+                min-height:21px;
             }
             
             #actionContainer{
@@ -216,6 +217,12 @@
             .emptyHelper{
                 display: block;
             }
+            
+            .mobHelper{
+                display:block;
+                height: 100%;
+                position: relative;
+            }
 
             .mobHelper:before{
                     height: 10px;
@@ -237,8 +244,15 @@
                 display: block;
                 z-index: 15;
                 margin-top: -2px;
-
                 max-width: 96%;
+                position: absolute;
+                bottom: 0;
+            }
+            
+            .fullMap .mobHelper:before{
+                font-size:8px;
+                font-weight:normal;
+                
             }
 
             .dpad{
@@ -334,6 +348,10 @@
                     width:33%;
                     height:50px;
                 }
+                
+                .fullMap .mobHelper:before,.fullMap .mobHelper:after{
+                    display:none;
+                }
             }
         </style>
     </head>
@@ -345,6 +363,8 @@
             <div id="game_log"></div>
             <h4 class="logHeader">Tech log</h4>
             <div id="tech_log"></div>
+            <div class="gameInfo hidden" id="joinCodeHeader">Join code (actually, just copy Join Game Link instead): </div>
+            <div class="gameInfo" id="joinCode"></div>
         </div>
         <div class="col50 colGame">
             <div class="topButtons">
@@ -352,26 +372,25 @@
                     <input type="hidden" id="newgame" name="newgame" value="true">
                     <button>New game</button>
                 </form>
-                  <button onclick="updatePlayArea('skip');">Skip Turn</button>
-                  <button onclick="autoTurn('skip');">Auto Turn</button>
+                  <button onclick="GameRequest.update('move','skip');">Skip Turn</button>
+                  <button onclick="GameRequest.autoUpdate('skip');">Auto Turn</button>
                   <div id="spinner" class='hidden'></div>
             </div>
               <div id="actionContainer"></div>
               <div id="controls">
-                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','north');">⬆️️</button></div>
-                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','west');">⬅️</button><div class="controlButtonStub"></div><button class="controlButton" onclick="updatePlayArea('move','east');">➡️</button></div>
-                  <div class="dpad"><button class="controlButton" onclick="updatePlayArea('move','south');">⬇️</button></div>
+                  <div class="dpad"><button class="controlButton" onclick="GameRequest.update('move','north');">⬆️️</button></div>
+                  <div class="dpad"><button class="controlButton" onclick="GameRequest.update('move','west');">⬅️</button><div class="controlButtonStub"></div><button class="controlButton" onclick="GameRequest.update('move','east');">➡️</button></div>
+                  <div class="dpad"><button class="controlButton" onclick="GameRequest.update('move','south');">⬇️</button></div>
                   <div></div>
               </div>
             
         </div>
           <div class="col25 colInfo">
+              <div class="gameInfo" id="victoryDefeat"></div>
               <div class="gameInfo"><span id="joinLink"></span><span id="playerSlots"></span></div>
               <div class="gameInfo" id="turnMessage"></div>
               <div class="gameInfo" id="playerInfo"></div>
-              <div class="gameInfo" id="victoryDefeat"></div>
-              <div class="gameInfo hidden" id="joinCodeHeader">Join code (actually, just copy Join Game Link instead): </div>
-              <div class="gameInfo" id="joinCode"></div>
+              
               <div class="gameInfo" > Controls - WASD to walk, attack enemies by walking into them</div>
           </div>
           
@@ -380,26 +399,56 @@
     </body>
     <script>
 
-      
+        const GameRequest = new XMLHttpRequest();
+        GameRequest.idleAction = 'check';
+        GameRequest.timeoutID = '';
+        
+        GameRequest.fire = function (action,direction,timeoutTime){
+            
+            console.log(action+" "+direction+" "+timeoutTime);
+            
+            document.getElementById("gamePage").classList.add("requestLoading");
+            document.getElementById("spinner").classList.add("show");
+
+            this.open('POST', '/Phprpg/action.php');
+            this.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            this.send(JSON.stringify({'action':action,'direction':direction}));
+            
+            
+            //"this" scope is weird in JS, have to use some ES6 workaround
+            this.timeoutID = setTimeout((() => {
+                this.autoUpdate(this.idleAction);
+            }), timeoutTime);
+        };
 
         
-        var req = new XMLHttpRequest();
+        GameRequest.autoUpdate = function (action){
+            this.idleAction = action;
+            this.fire(action,null,2200);
+        };
         
-        req.action = 'check';
-        req.auto = false;
-        req.timeoutId = null;
-        
-        req.onreadystatechange = function() {
-            if (req.readyState === 4) {
+        GameRequest.update = function (action,direction){
+            let request_states = [1, 2, 3];
+            this.idleAction = 'check';
+            if (!request_states.includes(this.readyState)) {
+                this.abort();
                 
+                clearTimeout(this.timeoutID);
+                this.fire(action,direction,2200);
+            }
+        };
+        
+        
+        GameRequest.onreadystatechange = function() {
+            if (this.readyState === 4) {
                 
                 try {
-                    var response = JSON.parse(req.responseText);
+                    var response = JSON.parse(this.responseText);
                 } catch (e) {
-                    console.log(req.responseText);
+                    console.log(this.responseText);
                 }
                 
-                if (response){
+                if (response !== undefined){
                     document.getElementById("actionContainer").innerHTML = response.map;
                     
                     if (response.game_log !== ''){
@@ -417,20 +466,10 @@
                         document.getElementById("gameLogHeader").classList.add("hidden");
                     }
                     
-                    
                     document.getElementById("tech_log").innerHTML = response.tech_log;
-                    
-                    
-                    
                     document.getElementById("playerInfo").innerHTML = response.player_info;
-                    
                     document.getElementById("turnMessage").innerHTML = response.turn_message;
-                    
-                    
                     document.getElementById("victoryDefeat").innerHTML = response.victory_defeat_message;
-                    
-                    
-                  
 
                     if (document.getElementById("joinCode").innerHTML !== response.join_code){
                         document.getElementById("joinCode").innerHTML = response.join_code;
@@ -444,80 +483,38 @@
                             document.getElementById("joinLink").innerHTML = '';
                         }
                         
-                        
                     }
                     if (response.join_code){
                         document.getElementById("playerSlots").innerHTML = response.player_slots + ' players slots used';
                     }
-                    
-                    
+
                 }
-                
-                
                 
                 document.getElementById("gamePage").classList.remove("requestLoading");
                 document.getElementById("spinner").classList.remove("show");
-                req.timeoutId = setTimeout(function(){autoTurn(req.action);}, 2200);
-
+                
             }
         };
         
-        
-        function updatePlayArea(act = 'check',dir = ''){
-            
-            var request_states = [1, 2, 3];
-            
-            if (!request_states.includes(req.readyState)) {
-                document.getElementById("gamePage").classList.add("requestLoading");
-                document.getElementById("spinner").classList.add("show");
+        GameRequest.autoUpdate('check');
 
-                req.abort();
-                clearTimeout(req.timeoutId);
-                
-                req.action = act;
-                req.open('POST', '/Phprpg/action.php');
-                req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                req.send(JSON.stringify({'action':act,'direction':dir}));
-                req.action = 'check';
-                
-            }
-            
-            
-            
-            
-            
 
-        }
-        
-        function autoTurn(act = 'check'){
-            if (act === 'skip'){
-                req.action = 'skip';
-            }
-            document.getElementById("gamePage").classList.add("requestLoading");
-            req.auto = true;
-            req.open('POST', '/Phprpg/action.php');
-            req.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            req.send(JSON.stringify({'action':act}));
-        }
-        
-        autoTurn('check');
-        
         document.addEventListener('keypress', (event) => {
             var name = event.key;
             var code = event.code;
 
               switch (code) {
                 case 'KeyW':
-                  updatePlayArea('move','north');
+                  GameRequest.update('move','north');
                   break;
                 case 'KeyS':
-                  updatePlayArea('move','south');
+                  GameRequest.update('move','south');
                   break;
                 case 'KeyA':
-                    updatePlayArea('move','west');
+                   GameRequest.update('move','west');
                     break;
                 case 'KeyD':
-                  updatePlayArea('move','east');
+                  GameRequest.update('move','east');
                   break;
 
               }

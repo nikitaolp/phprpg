@@ -111,21 +111,23 @@ class Output {
             }
         }
         
-        return $this->getMapFromArray($radial_array);
+        
+        
+        return $this->getMapFromArray($radial_array,'partialMap');
     }
     
     private function getFullMap():string{
         $map = '';
         if ($this->world){
-           $map =  $this->getMapFromArray($this->world->getTileStorage()->getEntities());
+           $map =  $this->getMapFromArray($this->world->getTileStorage()->getEntities(),'fullMap');
         }
         return $map;
     }
     
     
-    private function getMapFromArray( array $tilesArray):string{
+    private function getMapFromArray(array $tilesArray, string $class):string{
         
-        $gfxMap = '';
+        $gfxMap = "<div class='gameMapBlock {$class}' >";
         
         if ($this->world){
             foreach($tilesArray as $y => $line){
@@ -192,7 +194,7 @@ class Output {
         }
         
 
-        
+        $gfxMap .= '</div>';
         
         return $gfxMap;
     }

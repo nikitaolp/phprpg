@@ -210,6 +210,7 @@ class WorldCommander {
     public function addPlayer():void{
         if (empty($this->current_player_coordinates)){
             $this->world->addPlayer($this->player_id);
+            $this->findPlayerCoordinates();
         }
     }
 }

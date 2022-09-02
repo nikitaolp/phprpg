@@ -87,7 +87,7 @@ if ($state->isGameStarted()){
                 $worldCommander->mobTurn();
             }
 
-
+            $output->setTurnMessage("");
 
             Lo::g('Before turn insert');
             $state->completeTurn();
@@ -111,12 +111,14 @@ if ($state->isGameStarted()){
         $worldCommander->addPlayer();
     }
     
+    $output->setCoordinates($worldCommander->getPlayerCoordinates());
+    
     
     if ($player_is_new || $my_turn){
         $state->saveWorld($world);
     }
     
-    $output->setCoordinates($worldCommander->getPlayerCoordinates());
+    
     
     $output->setJoinCode($state->getJoinCode());
     
