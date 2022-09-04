@@ -432,7 +432,7 @@
         
         GameRequest.update = function (action,direction){
             let request_states = [1, 2, 3];
-            navigator.vibrate(100);
+            navigator.vibrate(50);
             this.idleAction = 'check';
             if (!request_states.includes(this.readyState)) {
                 this.abort();
