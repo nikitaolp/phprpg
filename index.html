@@ -349,8 +349,13 @@
                     height:50px;
                 }
                 
-                .fullMap .mobHelper:before,.fullMap .mobHelper:after{
-                    display:none;
+                .fullMap .mobHelper:before{
+                    font-size:2px;
+
+                }
+                
+                .fullMap .mobHelper:after{
+                    height:1px;
                 }
             }
         </style>
@@ -405,8 +410,6 @@
         
         GameRequest.fire = function (action,direction,timeoutTime){
             
-            console.log(action+" "+direction+" "+timeoutTime);
-            
             document.getElementById("gamePage").classList.add("requestLoading");
             document.getElementById("spinner").classList.add("show");
 
@@ -429,6 +432,7 @@
         
         GameRequest.update = function (action,direction){
             let request_states = [1, 2, 3];
+            navigator.vibrate(100);
             this.idleAction = 'check';
             if (!request_states.includes(this.readyState)) {
                 this.abort();
@@ -503,21 +507,20 @@
             var name = event.key;
             var code = event.code;
 
-              switch (code) {
-                case 'KeyW':
+            switch (code) {
+              case 'KeyW':
                   GameRequest.update('move','north');
                   break;
-                case 'KeyS':
+              case 'KeyS':
                   GameRequest.update('move','south');
                   break;
-                case 'KeyA':
-                   GameRequest.update('move','west');
-                    break;
-                case 'KeyD':
+              case 'KeyA':
+                  GameRequest.update('move','west');
+                  break;
+              case 'KeyD':
                   GameRequest.update('move','east');
                   break;
-
-              }
+            }
 
           }, false);
     </script>

@@ -21,12 +21,41 @@ class Database {
         }
     }
     
-    public function install(){
+    public function install():string{
+        $message = "Tables were not created";
+        $table_games = "CREATE TABLE IF NOT EXISTS `games` (
+                `id` int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `world_gz` blob NOT NULL,
+                `session` varchar(255) NOT NULL,
+                `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
         
+        $table_players = "CREATE TABLE IF NOT EXISTS `players` (
+                    `id` int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    `game_id` int(11) NOT NULL,
+                    `turn_order` int(11) NOT NULL,
+                    `session` varchar(255) NOT NULL,
+                    `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+        
+        $table_turns = "CREATE TABLE IF NOT EXISTS `turns` (
+                    `id` int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    `game_id` int(11) NOT NULL,
+                    `player_id` int(11) NOT NULL,
+                    `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;";
+        
+        
+        if ($this->pdo->prepare($table_games)->execute() &&
+            $this->pdo->prepare($table_players)->execute() &&
+            $this->pdo->prepare($table_turns)->execute()){
+            $message = "Tables `games`, `players`, `turns` exist. Database installation is complete.";
+        }
+        return $message;
     }
     
     public function check(){
-        $statement = $this->pdo->prepare("select * from `games`");
+        $statement = $this->pdo->prepare("select * from `games` limit 100");
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS);
     }
@@ -46,12 +75,6 @@ class Database {
         return $stmt->fetch();
     }
  
-//    public function getPlayerAndGame($session){
-//        
-//        $stmt = $this->pdo->prepare("SELECT * FROM `players` LEFT JOIN `games` ON `players`.`game_id` = `games`.`id` WHERE `players`.`session` = :session LIMIT 1");
-//        $stmt->execute([':session' => $session]);
-//        return $stmt->fetch();
-//    }
 
     public function getLastPlayer(int $game_id){
         $stmt = $this->pdo->prepare("SELECT * FROM `players` WHERE `game_id` = :game_id ORDER BY `turn_order` DESC LIMIT 1");
