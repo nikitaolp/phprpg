@@ -357,6 +357,10 @@
                 .fullMap .mobHelper:after{
                     height:1px;
                 }
+                
+                .fullMap .mobImg.attack{
+                    background-image:none;
+                }
             }
         </style>
     </head>
@@ -377,12 +381,12 @@
                     <input type="hidden" id="newgame" name="newgame" value="true">
                     <button>New game</button>
                 </form>
-                  <button onclick="GameRequest.update('move','skip');">Skip Turn</button>
-                  <button onclick="GameRequest.autoUpdate('skip');">Auto Turn</button>
+                  <button class="invisibleBeforeStart hidden" onclick="GameRequest.update('move','skip');">Skip Turn</button>
+                  <button class="invisibleBeforeStart hidden" onclick="GameRequest.autoUpdate('skip');">Auto Turn</button>
                   <div id="spinner" class='hidden'></div>
             </div>
               <div id="actionContainer"></div>
-              <div id="controls">
+              <div id="controls" class="invisibleBeforeStart hidden">
                   <div class="dpad"><button class="controlButton" onclick="GameRequest.update('move','north');">⬆️️</button></div>
                   <div class="dpad"><button class="controlButton" onclick="GameRequest.update('move','west');">⬅️</button><div class="controlButtonStub"></div><button class="controlButton" onclick="GameRequest.update('move','east');">➡️</button></div>
                   <div class="dpad"><button class="controlButton" onclick="GameRequest.update('move','south');">⬇️</button></div>
@@ -397,6 +401,8 @@
               <div class="gameInfo" id="playerInfo"></div>
               
               <div class="gameInfo" > Controls - WASD to walk, attack enemies by walking into them</div>
+              <div class="gameInfo" > Victory conditions: player reached level 10, or collected 5 gold, or reached coordinates x:1 y:1</div>
+              <div class="gameInfo" > Defeat conditions: any of the mobs reached level 20, or collected 20 gold, or all the player slots are taken and players are dead</div>
           </div>
           
 
@@ -476,6 +482,9 @@
                     document.getElementById("victoryDefeat").innerHTML = response.victory_defeat_message;
 
                     if (document.getElementById("joinCode").innerHTML !== response.join_code){
+                        
+                        //i guess i am using join_code as an indicator that the game is started, for now
+                        
                         document.getElementById("joinCode").innerHTML = response.join_code;
                         
                         if (response.join_code){
@@ -483,6 +492,15 @@
                             
                             document.getElementById("joinCodeHeader").classList.remove("hidden");
                             document.getElementById("joinCodeHeader").classList.add("visible");
+                            
+                            let elementsToShow = document.getElementsByClassName("invisibleBeforeStart");
+                            
+                            Array.from(document.getElementsByClassName("invisibleBeforeStart")).forEach(function(item) {
+                                item.classList.remove("hidden");
+                            });
+                            
+                            
+                            
                         } else {
                             document.getElementById("joinLink").innerHTML = '';
                         }
@@ -490,6 +508,8 @@
                     }
                     if (response.join_code){
                         document.getElementById("playerSlots").innerHTML = response.player_slots + ' players slots used';
+                    } else {
+                        document.getElementById("playerSlots").innerHTML = "";
                     }
 
                 }

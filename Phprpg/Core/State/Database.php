@@ -54,6 +54,33 @@ class Database {
         return $message;
     }
     
+    public function cleanupCron(int $deleteUpUntil):void{
+        $game_ids_stmt = $this->pdo->prepare("SELECT `id` FROM `games` WHERE `timestamp` <= FROM_UNIXTIME(:deleteUpUntil)");
+        
+        if ($game_ids_stmt->execute([':deleteUpUntil' => $deleteUpUntil])){
+            $game_ids = $game_ids_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            
+            if (!empty($game_ids)){
+                
+                $ids_string = implode(',', $game_ids);
+                
+                $games_del_stmt = $this->pdo->prepare("DELETE FROM `games` WHERE FIND_IN_SET(`id`, :id_array)");
+                $games_del_stmt->bindParam('id_array', $ids_string);
+                $games_del_stmt->execute();
+                
+                $players_del_stmt = $this->pdo->prepare("DELETE FROM `players` WHERE FIND_IN_SET(`game_id`, :id_array)");
+                $players_del_stmt->bindParam('id_array', $ids_string);
+                $players_del_stmt->execute();
+                
+                $turns_del_stmt = $this->pdo->prepare("DELETE FROM `turns` WHERE FIND_IN_SET(`game_id`, :id_array)");
+                $turns_del_stmt->bindParam('id_array', $ids_string);
+                $turns_del_stmt->execute();
+                
+            }
+        }        
+    }
+    
     public function check(){
         $statement = $this->pdo->prepare("select * from `games` limit 100");
         $statement->execute();

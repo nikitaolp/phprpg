@@ -7,9 +7,9 @@ return [
         'mob_sight'=>3,
         'mob_priorities'=>[
             'escape'=>1,
-            'avoid_undesireable'=>1,
             'pickup_desireable'=>1,
-            'attack'=>1
+            'attack'=>1,
+            'avoid_undesireable'=>1
             
         ],
         'turn_timeout'=>30,
