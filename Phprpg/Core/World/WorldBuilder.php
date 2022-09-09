@@ -1,16 +1,25 @@
 <?php
 
 namespace Phprpg\Core\World;
-
+/**
+* WorldBuilder class
+* 
+* I don't like this class.
+* It shouldn't be called WorldBuilder, it doesn't build worlds, it builds itself
+* Since this object is pretty much the only thing stored in DB, it should be more like WorldState, with all the building functions moved to some LevelBuilder class
+* but I'm keeping it like this for now
+* 
+* @package    phprpg
+* @author     nikitaolp
+*/
 use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,GameEntityFactory};
 use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat};
+
 class WorldBuilder {
-    //put your code here
-    
-    //private array $worldArray = [];
+
     private int $maxMobCount;
     private int $maxItemCount;
     
