@@ -4,7 +4,7 @@ namespace Phprpg\Core\Entities;
 abstract class GameEntity {
     
     protected string $gfx;
-    protected string $char;
+    protected int $entity_id;
     protected string $desc;
     protected string $name;
     protected int $chance;
@@ -26,8 +26,8 @@ abstract class GameEntity {
     }
     
     
-    public function getChar():string{
-        return $this->char;
+    public function getEntityId():string{
+        return $this->entity_id;
     }
     
      public function getChance():string{

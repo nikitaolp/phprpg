@@ -2,7 +2,7 @@
 return [
     'player'=>[
             'gfx'=>'player.png',
-            'char'=>'P',
+            'entity_id'=>'401',
             'desc'=>'Basic player',
             'chance'=>100,
             'hp'=>500,

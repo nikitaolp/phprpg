@@ -10,7 +10,7 @@ class Tile extends GameEntity{
             protected string $name,
             protected bool $walkable,
             protected string $gfx,
-            protected string $char, 
+            protected int $entity_id, 
             protected string $desc,
             protected int $chance) {
         

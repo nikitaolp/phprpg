@@ -12,7 +12,7 @@ class TileFactory extends GameEntityFactory {
                     $name,
                     $tileArray['walkable'],
                     $tileArray['gfx'],
-                    $tileArray['char'],
+                    $tileArray['entity_id'],
                     $tileArray['desc'],
                     $tileArray['chance']);
         } 

@@ -7,7 +7,7 @@ class Mob extends GameEntity{
     
     protected ?string $moveDirection = null;
     protected int $level = 1;
-    //protected Coordinates $coord;
+    
     protected int $hp = 0;
     
     protected int $xp_earned = 0;
@@ -23,7 +23,7 @@ class Mob extends GameEntity{
     public function __construct(
             protected string $name,
             protected string $gfx,
-            protected string $char, 
+            protected int $entity_id, 
             protected string $desc,
             protected int $chance,
             protected int $maxhp,
@@ -32,7 +32,6 @@ class Mob extends GameEntity{
             protected int $xp_value,
             protected int $xp_to_level_up) {
         $this->hp = $maxhp;
-        //$this->coord = new Coordinates(0,0);
         
     }
     

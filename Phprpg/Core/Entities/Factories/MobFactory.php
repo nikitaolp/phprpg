@@ -10,7 +10,7 @@ class MobFactory extends GameEntityFactory {
             $this->blueprints[$name] = new Mob(
                     $name,
                     $mobArray['gfx'],
-                    $mobArray['char'],
+                    $mobArray['entity_id'],
                     $mobArray['desc'],
                     $mobArray['chance'],
                     $mobArray['hp'],

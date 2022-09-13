@@ -10,7 +10,7 @@ class Item extends GameEntity{
     public function __construct(
             protected string $name,
             protected string $gfx,
-            protected string $char, 
+            protected int $entity_id, 
             protected string $desc,
             protected int $chance,
             private ?bool $desireable,

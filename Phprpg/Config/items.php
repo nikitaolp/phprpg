@@ -3,7 +3,7 @@
 return [
     'health'=>[
         'gfx'=>'heart.png',
-        'char'=>'H',
+        'entity_id'=>'301',
         'desc'=>'Heal up!',
         'chance'=>5,
         'desireable'=>true,
@@ -11,7 +11,7 @@ return [
     ],
     'spikes'=>[
         'gfx'=>'spikes.png',
-        'char'=>'S',
+        'entity_id'=>'302',
         'desc'=>'Spike trap. Bad to step on.',
         'chance'=>1,
         'desireable'=>false,
@@ -19,7 +19,7 @@ return [
     ],
     'gold'=>[
         'gfx'=>'gold.png',
-        'char'=>'G',
+        'entity_id'=>'303',
         'desc'=>'some gold',
         'chance'=>4,
         'desireable'=>null,
@@ -27,7 +27,7 @@ return [
     ],
     'xp'=>[
         'gfx'=>'xp.png',
-        'char'=>'x',
+        'entity_id'=>'304',
         'desc'=>'A book of knowledge',
         'chance'=>3,
         'desireable'=>true,

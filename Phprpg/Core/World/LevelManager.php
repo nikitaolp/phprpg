@@ -33,7 +33,7 @@ class LevelManager {
             }
             
         }
-        
+        ksort($this->levels);
     }
     
     public function nextLevel(Level $level):?Level{

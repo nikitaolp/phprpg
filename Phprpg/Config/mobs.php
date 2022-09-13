@@ -2,7 +2,7 @@
 return [
     'rat'=>[
             'gfx'=>'rat.png',
-            'char'=>'R',
+            'entity_id'=>'201',
             'desc'=>'Scrawny rat',
             'chance'=>20,
             'hp'=>200,
@@ -13,7 +13,7 @@ return [
     ],
     'wolf'=>[
             'gfx'=>'wolf.png',
-            'char'=>'W',
+            'entity_id'=>'202',
             'desc'=>'Yes, that is a wolf. I know. I tried. ',
             'chance'=>7,
             'hp'=>350,
@@ -24,7 +24,7 @@ return [
     ],
     'bear'=>[
             'gfx'=>'bear.png',
-            'char'=>'B',
+            'entity_id'=>'203',
             'desc'=>'A bear...',
             'chance'=>1,
             'hp'=>700,
@@ -35,7 +35,7 @@ return [
     ],
     'undead'=>[
             'gfx'=>'undead.png',
-            'char'=>'U',
+            'entity_id'=>'204',
             'desc'=>'Been like this for a long time now',
             'chance'=>6,
             'hp'=>300,
@@ -46,7 +46,7 @@ return [
     ],
     'skeleton'=>[
             'gfx'=>'skeleton.png',
-            'char'=>'S',
+            'entity_id'=>'205',
             'desc'=>'So hard to draw, wtf is that...',
             'chance'=>3,
             'hp'=>500,
@@ -57,7 +57,7 @@ return [
     ],
     'necromancer'=>[
             'gfx'=>'necromancer.png',
-            'char'=>'N',
+            'entity_id'=>'206',
             'desc'=>'He has a magic wand, and he is insecure',
             'chance'=>1,
             'hp'=>500,
@@ -68,7 +68,7 @@ return [
     ],
     'thief'=>[
             'gfx'=>'thief.png',
-            'char'=>'T',
+            'entity_id'=>'207',
             'desc'=>"He wishes he could sneak",
             'chance'=>5,
             'hp'=>250,
@@ -79,7 +79,7 @@ return [
     ],
     'bandit'=>[
             'gfx'=>'bandit.png',
-            'char'=>'A',
+            'entity_id'=>'208',
             'desc'=>"Has an axe",
             'chance'=>6,
             'hp'=>320,
@@ -90,7 +90,7 @@ return [
     ],
     'baron'=>[
             'gfx'=>'robber-baron.png',
-            'char'=>'R',
+            'entity_id'=>'209',
             'desc'=>"Robber baron. Big strong boi.",
             'chance'=>1,
             'hp'=>600,

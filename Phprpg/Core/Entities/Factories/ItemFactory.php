@@ -10,7 +10,7 @@ class ItemFactory extends GameEntityFactory {
             $this->blueprints[$name] = new Item(
                     $name,
                     $itemArray['gfx'],
-                    $itemArray['char'],
+                    $itemArray['entity_id'],
                     $itemArray['desc'],
                     $itemArray['chance'],
                     $itemArray['desireable'],
