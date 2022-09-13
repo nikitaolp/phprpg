@@ -5,7 +5,7 @@ namespace Phprpg;
 use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\State\{Database,GameState};
 use Phprpg\Core\Io\{Input,Output};
-use Phprpg\Core\World\{WorldBuilder,WorldCommander};
+use Phprpg\Core\World\{WorldBuilder,WorldCommander,Level,LevelManager};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory};
 use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat,VictoryDefeatManager};
@@ -25,6 +25,7 @@ AppStorage::set('tiles',require 'Config/tiles.php');
 AppStorage::set('mobs',require 'Config/mobs.php');
 AppStorage::set('players',require 'Config/players.php');
 AppStorage::set('items',require 'Config/items.php');
+
 
 AppStorage::set('db', new Database(require 'cred.php'));
 
@@ -47,7 +48,14 @@ if ($state->isGameStarted()){
                     new GameEntityStorage() 
                 );
 
-        $world->build();
+        //$world->build();
+        
+        //testing custom levels, unstable hack {
+        $levels = new LevelManager(require 'Config/levels.php',$world);
+        $level = $levels->getFirstLevel();
+        $world->buildLevelFromArray($level->getEntityIdArray());
+        //} testing custom levels
+        
         $state->setWorld($world);
         
     }

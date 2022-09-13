@@ -227,6 +227,79 @@ class WorldBuilder {
         
 
     }
+     
     
+    public function buildLevelFromArray(array $level_array){
+        
+        $tiles = clone $this->tileStorage;
+        $tiles->clearStorage();
+        
+        $mobs = clone $this->mobStorage;
+        $mobs->clearStorage();
+        
+        $items = clone $this->itemStorage;
+        $items->clearStorage();
+        
+        
+        
+        $world_array = [];
+        
+        foreach ($level_array as $y => $x_array){
+            
+            foreach ($x_array as $x => $tile_placeholder){
+            
+                if (!is_array($tile_placeholder)){
+                    
+                    $tiles->storeAtXY($this->tileAssembler->getByEntityId($tile_placeholder),$x,$y);
+                    
+                } else {
+                    
+                    if (!empty($tile_placeholder[0])){
+                        
+                        $tiles->storeAtXY($this->tileAssembler->getByEntityId($tile_placeholder[0]),$x,$y);
+                        
+                        if (!empty($tile_placeholder[1])){
+                            
+                            $entity_id_type = (string)$tile_placeholder[1];
+                            $entity_id_type = $entity_id_type[0];
+                            
+                            switch ($entity_id_type) {
+                                case '2':
+                                    $mobs->storeAtXY($this->mobAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
+                                break;
+
+                                case '3':
+                                    $items->storeAtXY($this->itemAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
+                                break;
+
+                                case '4':
+                                    $mobs->storeAtXY($this->mobAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
+                                break;
+                            }
+                            
+                        }
+                        
+                    } else {
+                        throw new Exception("Something weird with level config");
+                    }
+                    
+                }
+
+            }
+            
+        }
+        
+        $this->tileStorage = $tiles;
+
+        
+        $this->mobStorage = $mobs;
+
+        
+        $this->itemStorage = $items;
+        
+        $this->maxMobCount = $this->mobStorage->getAllEntityCount();   
+        $this->maxItemCount = $this->itemStorage->getAllEntityCount(); 
+        
+    }
 
 }

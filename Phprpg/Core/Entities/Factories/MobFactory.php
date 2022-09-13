@@ -7,7 +7,7 @@ class MobFactory extends GameEntityFactory {
     
     public function fromArray(array $array):void {
         foreach ($array as $name=>$mobArray){
-            $this->blueprints[$name] = new Mob(
+            $this->blueprints[$mobArray['entity_id']] = new Mob(
                     $name,
                     $mobArray['gfx'],
                     $mobArray['entity_id'],
@@ -24,6 +24,14 @@ class MobFactory extends GameEntityFactory {
     
     public function tryToGetRandom():?GameEntity{
         if ($mob = parent::tryToGetRandom()){
+            $this->generateNickname($mob);
+            return $mob;
+        }
+        return null;
+    }
+    
+    public function getByEntityId(int $entity_id):?GameEntity{
+        if ($mob = parent::getByEntityId($entity_id)){
             $this->generateNickname($mob);
             return $mob;
         }

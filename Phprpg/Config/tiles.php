@@ -3,7 +3,7 @@ return  [
         'water'=>[
             'walkable'=>false,
             'gfx'=>'water.png',
-            'entity_id'=>'101',
+            'entity_id'=>'105',
             'desc'=>'water is wet',
             'chance'=>20
             ],
@@ -38,7 +38,7 @@ return  [
         'grass'=>[
             'walkable'=>true,
             'gfx'=>'grass.png',
-            'entity_id'=>'105',
+            'entity_id'=>'101',
             'desc'=>'green and blissfull',
             'chance'=>100
             ],

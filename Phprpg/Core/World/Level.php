@@ -1,6 +1,7 @@
 <?php
 
 namespace Phprpg\Core\World;
+use Phprpg\Core\VictoryDefeat\VictoryDefeatManager;
 
 /**
  * Description of Level

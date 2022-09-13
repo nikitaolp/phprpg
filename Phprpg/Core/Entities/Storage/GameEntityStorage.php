@@ -123,6 +123,10 @@ class GameEntityStorage {
         unset($this->storage[$y][$x]);
     }
     
+    
+    public function clearStorage():void{
+        $this->storage = [];
+    }
 
     
 }

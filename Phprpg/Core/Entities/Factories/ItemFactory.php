@@ -7,7 +7,7 @@ class ItemFactory extends GameEntityFactory {
     
     public function fromArray(array $array):void {
         foreach ($array as $name=>$itemArray){
-            $this->blueprints[$name] = new Item(
+            $this->blueprints[$itemArray['entity_id']] = new Item(
                     $name,
                     $itemArray['gfx'],
                     $itemArray['entity_id'],

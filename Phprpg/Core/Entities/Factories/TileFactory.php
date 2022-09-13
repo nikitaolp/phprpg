@@ -8,7 +8,7 @@ class TileFactory extends GameEntityFactory {
     
     public function fromArray(array $array):void {
         foreach ($array as $name=>$tileArray){
-            $this->blueprints[$name] = new Tile(
+            $this->blueprints[$tileArray['entity_id']] = new Tile(
                     $name,
                     $tileArray['walkable'],
                     $tileArray['gfx'],

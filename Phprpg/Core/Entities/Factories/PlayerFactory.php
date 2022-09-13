@@ -7,7 +7,7 @@ class PlayerFactory extends MobFactory{
     
     public function fromArray(array $array):void {
         foreach ($array as $name=>$mobArray){
-            $this->blueprints[$name] = new Player(
+            $this->blueprints[$mobArray['entity_id']] = new Player(
                     $name,
                     $mobArray['gfx'],
                     $mobArray['entity_id'],
