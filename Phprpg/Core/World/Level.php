@@ -12,7 +12,7 @@ class Level {
     //put your code here
     
     
-    public function __construct(private VictoryDefeatManager $vd,
+    public function __construct(private array $victoryDefeatArray,
                                 private array $entityIdArray,
                                 private string $name,
                                 private int $order,){
@@ -32,7 +32,7 @@ class Level {
         return $this->name;
     }
     
-    public function getVictoryDefeatManager():VictoryDefeatManager{
-        return $this->vd;
+    public function getVictoryDefeatArray():array{
+        return $this->victoryDefeatArray;
     }
 }

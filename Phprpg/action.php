@@ -35,7 +35,11 @@ $input = new Input(json_decode(file_get_contents("php://input"), true));
 $state = new GameState($_POST);
 $output = new Output();
 
+
 if ($state->isGameStarted()){
+    
+    
+    
     if (!($world = $state->getWorld())){
         
         $world = new WorldBuilder(
@@ -51,16 +55,59 @@ if ($state->isGameStarted()){
         //$world->build();
         
         //testing custom levels, unstable hack {
-        $levels = new LevelManager(require 'Config/levels.php',$world);
-        $level = $levels->getFirstLevel();
-        $world->buildLevelFromArray($level->getEntityIdArray());
+        
+                /**
+                 * 
+                 * so, the problem: level shouldn't contain VictoryDefeatManager, it contains $world reference, and if i want to store
+                 * level inside world... we end up with property object having reference to containing object, this is weird... well this is gross, shouldn't be this way
+                 * 
+                 * thus, level should only have victory defeat array
+                 * 
+                 * and how should the whole thing work then? 
+                 * 
+                 * 1. we check if world exists in state
+                 * 
+                 * if no, we check if there are any levels in level config
+                 * 
+                 * if yes, we get level, store it inside world, and build it. 
+                 * 
+                 * next turn, there is a level in world. then we check world->victorydefeat. if victory, then
+                 * 
+                 * levelmanager->nextLevel($world->get level)
+                 * if this is null... well, then we delete the level inside world, and build a random one. 
+                 * 
+                 * then victory defeat stuff...
+                 * 
+                 * 1. check if there is a level with vd array inside world
+                 * 2. if yes, create vd manager with this array. if no, use the default array
+                 * 3. then... everything is same? 
+                 * 
+                 */
+        
+                $levels = new LevelManager(require 'Config/levels.php',require 'Config/victory.php');
+                
+                
+                if ($firstLevel = $levels->getLevel()){
+                    $world->setLevel($firstLevel);
+                } else {
+                    $world->setLevel(new Level(require 'Config/victory.php', [], 'Random level', 0));
+                }
+                
+
+                
+                
+
+                $world->build();
+                
         //} testing custom levels
         
         $state->setWorld($world);
         
     }
     
-    $victoryDefeatManager = new VictoryDefeatManager(require 'Config/victory.php', $world);
+    
+    
+    $victoryDefeatManager = new VictoryDefeatManager($world->getLevel()->getVictoryDefeatArray(), $world);
     
 
     
@@ -108,7 +155,22 @@ if ($state->isGameStarted()){
         
         if (!($world->getVictoryDefeat()) || !($world->getVictoryDefeat()->isConcluded())){
             $victoryDefeatManager->check();
-            $world->setVictoryDefeat($victoryDefeatManager->getVictoryDefeat());
+            
+            $victoryDefeat = $victoryDefeatManager->getVictoryDefeat();
+            
+            $world->setVictoryDefeat($victoryDefeat);
+            
+            if ($victoryDefeat->getVictory()){
+                
+                $levels = new LevelManager(require 'Config/levels.php',require 'Config/victory.php');
+                
+                $world->setLevel($levels->getLevel($world->getLevel()));
+                $world->build();
+                
+                $victoryDefeatManager = new VictoryDefeatManager($world->getLevel()->getVictoryDefeatArray(), $world);
+                $victoryDefeat = $victoryDefeatManager->getVictoryDefeat();
+                $world->setVictoryDefeat($victoryDefeat);
+            }
         }
 
         $time_moved = microtime(true);

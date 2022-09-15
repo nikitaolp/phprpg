@@ -16,6 +16,7 @@ use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,GameEntityFactory};
 use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
+use Phprpg\Core\Turns\Coordinates;
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat};
 
 class WorldBuilder {
@@ -26,6 +27,8 @@ class WorldBuilder {
     private int $height;
     private int $width;
     private ?VictoryDefeat $victoryDefeat = null;
+    private ?Level $level = null;
+    private array $playerSpawnCoordinates = [];
     
     private array $deadPlayers = [];
     
@@ -94,6 +97,15 @@ class WorldBuilder {
         return $this->tileStorage;
     }
     
+    
+    public function setLevel(Level $level):void{
+        $this->level = $level;
+    }
+    
+    public function getLevel():?Level{
+        return $this->level;
+    }
+    
     public function addPlayer(int $player_id):void{
         
         
@@ -121,7 +133,7 @@ class WorldBuilder {
     
     //world array should be GameEntityStorage type object, not just array. But how to "build" then? Maybe just build here and then set the entire array in object
     //ok world array is gone, long live tile storage
-    public function build():void{
+    public function buildRandom():void{
         
             for ($h = 0; $h<= $this->height-1; $h++){
             
@@ -227,9 +239,43 @@ class WorldBuilder {
         
 
     }
+    
+    private function getPlayers():array{
+
+        $mobs = $this->getMobs();
+        
+        $players = [];
+        
+        foreach ($mobs as $y => $line){
+
+            foreach ($line as $x => $mob){
+                //these class checks are bad
+                if ('Phprpg\Core\Entities\Player' != get_class($mob) || $mob->isExpired()){
+                    continue;
+                }
+                
+                $players[] = $mob;
+                
+            }
+
+        }
+
+        return $players;
+
+    }
+    
+    public function build():void{
+        
+        if (!(empty($this->level->getEntityIdArray()))){
+            $this->buildFromLevelArray($this->level->getEntityIdArray());
+        } else {
+            $this->buildRandom();
+        }
+        
+    }
      
     
-    public function buildLevelFromArray(array $level_array){
+    private function buildFromLevelArray(array $level_array):void{
         
         $tiles = clone $this->tileStorage;
         $tiles->clearStorage();
@@ -240,9 +286,8 @@ class WorldBuilder {
         $items = clone $this->itemStorage;
         $items->clearStorage();
         
+        $this->playerSpawnCoordinates = [];
         
-        
-        $world_array = [];
         
         foreach ($level_array as $y => $x_array){
             
@@ -275,6 +320,12 @@ class WorldBuilder {
                                 case '4':
                                     $mobs->storeAtXY($this->mobAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
                                 break;
+                                
+                                case '9':
+                                    if (999 == $tile_placeholder[1]){
+                                        $this->playerSpawnCoordinates[] = new Coordinates($x,$y);
+                                    }
+                                break;
                             }
                             
                         }
@@ -289,6 +340,23 @@ class WorldBuilder {
             
         }
         
+        
+        if ($players = $this->getPlayers()){
+            
+            foreach ($players as $k => $pl){
+                
+                if (!empty($this->playerSpawnCoordinates[$k])){
+                    $mobs->storeAtXY($pl,$this->playerSpawnCoordinates[$k]->getX(),$this->playerSpawnCoordinates[$k]->getY());
+                } else {
+                    throw new Exception("there are fewer player spawn points than there are players");
+                }
+                
+                
+                
+            }
+            
+        }
+        
         $this->tileStorage = $tiles;
 
         
@@ -296,6 +364,7 @@ class WorldBuilder {
 
         
         $this->itemStorage = $items;
+        $this->victoryDefeat = null;
         
         $this->maxMobCount = $this->mobStorage->getAllEntityCount();   
         $this->maxItemCount = $this->itemStorage->getAllEntityCount(); 

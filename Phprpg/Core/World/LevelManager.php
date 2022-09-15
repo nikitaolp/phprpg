@@ -13,18 +13,18 @@ class LevelManager {
     
     private array $levels = [];
     
-    public function __construct(array $configArray, private WorldBuilder $world){
+    public function __construct(array $configArray, private array $defaultVictoryDefeatArray){
         
         foreach ($configArray as $levelData){
             
             if (isset($levelData['name']) && 
                 !empty($levelData['entityIdArray']) &&
-                !empty($levelData['order']) &&
+                isset($levelData['order']) &&
                 ctype_digit((string)$levelData['order']) &&
                 !empty($levelData['victoryDefeatConditions']) 
             ){
                 $this->levels[$levelData['order']] = new Level(
-                        new VictoryDefeatManager($levelData['victoryDefeatConditions'],$this->world),
+                        $levelData['victoryDefeatConditions'],
                         $levelData['entityIdArray'],
                         $levelData['name'],
                         $levelData['order']
@@ -37,20 +37,28 @@ class LevelManager {
         ksort($this->levels);
     }
     
-    public function getFirstLevel():?Level{
+    private function getFirstLevel():?Level{
         
-        if (!empty($this->levels[1])){
-            return $this->levels[1];
+        if ($first = reset($this->levels)){
+            return $first;
         }
         return null;
         
     }
     
-    public function nextLevel(Level $level):?Level{
-        if (!empty($this->levels[$level->getOrder()])){
-            return $this->levels[$level->getOrder()];
+    
+    public function getLevel(?Level $prevLevel = null):?Level{
+        
+        if ($prevLevel){
+            if (!empty($this->levels[$prevLevel->getOrder()+1])){
+                return $this->levels[$prevLevel->getOrder()+1];
+            }
+        } else {
+            return $this->getFirstLevel();
         }
-        return null;
+        
+        return new Level($this->defaultVictoryDefeatArray, [], 'Random level', 0);
+        
     }
     
     
