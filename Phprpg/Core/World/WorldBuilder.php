@@ -109,6 +109,39 @@ class WorldBuilder {
     public function addPlayer(int $player_id):void{
         
         
+        if (!empty($this->playerSpawnCoordinates)){
+            if (!($player = $this->addPlayerAtSpawnCoordinates())){
+                throw new Exception("Unable to add player to predefined player coordinates");
+            }
+            
+        } else {
+            $player = $this->addPlayerRandom();
+        }
+        
+        $player->setId($player_id);
+        
+
+    }
+    
+    private function addPlayerAtSpawnCoordinates():?Player{
+        
+        $new_player = $this->playerAssembler->tryToGetRandom();
+        
+        foreach ($this->playerSpawnCoordinates as $coord){
+            
+            if ($this->getTileStorage()->checkTileWalkability($coord) && !$this->getMobStorage()->getEntity($coord)){
+                
+                $this->mobStorage->storeAtXY($new_player,$coord->getX(),$coord->getY());
+                
+                return $new_player;
+            }
+            
+        }
+        
+        return null;
+    }
+    
+    private function  addPlayerRandom():?Player{
         
         $random_location = $this->tileStorage->getRandomTileCoordinates();
         $surroundingTiles = $this->tileStorage->getSurroundingEntities($random_location,5);
@@ -118,17 +151,15 @@ class WorldBuilder {
 
             foreach ($line as $x=>$tile){
                 if ($player = $this->tryToFillTile($tile,$this->mobStorage,$this->playerAssembler, $x, $y)){
-
-                    $player->setId($player_id);
                     
-                    break;
+                    return $player;   
                 }
             }
-            if (!empty($player)){
-                break;
-            }
 
-        }  
+        } 
+        
+        return null;
+        
     }
     
     //world array should be GameEntityStorage type object, not just array. But how to "build" then? Maybe just build here and then set the entire array in object
