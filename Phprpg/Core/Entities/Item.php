@@ -39,4 +39,10 @@ class Item extends GameEntity{
     public function __toString():string {
         return $this->name." (".$this->desc."): ".$this->amount;
     }
+    
+    public function receiveAction(Mob $mob): bool {
+        
+        $mob->pickupItem($this);
+        return true;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Phprpg\Core\World;
 use Phprpg\Core\VictoryDefeat\VictoryDefeatManager;
+use Phprpg\Core\{Lo};
 
 /**
  * Description of Level
@@ -27,7 +28,9 @@ class LevelManager {
                         $levelData['victoryDefeatConditions'],
                         $levelData['entityIdArray'],
                         $levelData['name'],
-                        $levelData['order']
+                        $levelData['order'],
+                        $levelData['maxMobCount'],
+                        $levelData['maxItemCount']
                 );
             } else {
                 throw new Exception("Level config is invalid");
@@ -56,7 +59,7 @@ class LevelManager {
         } else {
             return $this->getFirstLevel();
         }
-        
+
         return new Level($this->defaultVictoryDefeatArray, [], 'Random level', 0);
         
     }

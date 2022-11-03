@@ -19,4 +19,8 @@ class Tile extends GameEntity{
     public function isWalkable():bool{
         return $this->walkable;
     }
+    
+    public function receiveAction(Mob $mob): bool {
+        return $this->isWalkable();
+    }
 }

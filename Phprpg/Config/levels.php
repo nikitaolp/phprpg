@@ -38,6 +38,8 @@ return [
     ],
     'name' => 'Tutorial Level',
     'order'=>1,
+    'maxItemCount'=>50,
+    'maxMobCount'=>50,
     'victoryDefeatConditions' =>[
         'victory' => [
             'Phprpg\Core\Entities\Player'=>[
@@ -45,6 +47,7 @@ return [
                 'inventory'=>['gold'=>2],
                 ]
             ]
+            
         ]
     ],
     [
@@ -72,6 +75,8 @@ return [
     ],
     'name' => 'Level 1',
     'order'=>2,
+    'maxItemCount'=>20,
+    'maxMobCount'=>20,
     'victoryDefeatConditions' =>[
         'victory' => [
             'Phprpg\Core\Entities\Player'=>[

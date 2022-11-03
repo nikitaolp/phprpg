@@ -46,4 +46,6 @@ abstract class GameEntity {
     public function isExpired():bool{
         return $this->expired;
     }
+    
+    abstract function receiveAction(Mob $mob):bool;
 }

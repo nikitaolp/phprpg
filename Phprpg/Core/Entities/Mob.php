@@ -228,4 +228,18 @@ class Mob extends GameEntity{
         
     }
     
+    public function receiveAction(Mob $mob):bool{
+        
+        if ($mob->getTeam() != $this->getTeam()){
+            
+            $atck = new Attack($mob,$this);
+            
+            if ($this->isExpired()){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
 }

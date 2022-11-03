@@ -167,9 +167,19 @@ if ($state->isGameStarted()){
                 $world->setLevel($levels->getLevel($world->getLevel()));
                 $world->build();
                 
-                $victoryDefeatManager = new VictoryDefeatManager($world->getLevel()->getVictoryDefeatArray(), $world);
-                $victoryDefeat = $victoryDefeatManager->getVictoryDefeat();
-                $world->setVictoryDefeat($victoryDefeat);
+                $newVictoryDefeatManager = new VictoryDefeatManager($world->getLevel()->getVictoryDefeatArray(), $world);
+                $newVictoryDefeat = $newVictoryDefeatManager->getVictoryDefeat();
+                
+                
+                $world->setVictoryDefeat($newVictoryDefeat);
+                
+                if ($newVictoryDefeat->getVictory()){
+                
+                Lo::gG($world->getLevel()->getVictoryDefeatArray());
+                
+                }
+                
+                $worldCommander->findPlayerCoordinates();
             }
         }
 

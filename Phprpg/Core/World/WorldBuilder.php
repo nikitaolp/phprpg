@@ -297,9 +297,19 @@ class WorldBuilder {
     
     public function build():void{
         
+        $this->victoryDefeat = null;
+        
         if (!(empty($this->level->getEntityIdArray()))){
+            
+            $this->maxMobCount = $this->level->getMaxMobCount();
+            $this->maxItemCount = $this->level->getMaxItemCount();
+            
             $this->buildFromLevelArray($this->level->getEntityIdArray());
         } else {
+            
+            $this->maxMobCount = $this->mobStorage->getAllEntityCount();   
+            $this->maxItemCount = $this->itemStorage->getAllEntityCount(); 
+            
             $this->buildRandom();
         }
         
@@ -397,8 +407,7 @@ class WorldBuilder {
         $this->itemStorage = $items;
         $this->victoryDefeat = null;
         
-        $this->maxMobCount = $this->mobStorage->getAllEntityCount();   
-        $this->maxItemCount = $this->itemStorage->getAllEntityCount(); 
+        
         
     }
 
