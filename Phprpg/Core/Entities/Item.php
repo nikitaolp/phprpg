@@ -40,9 +40,14 @@ class Item extends GameEntity{
         return $this->name." (".$this->desc."): ".$this->amount;
     }
     
-    public function receiveAction(Mob $mob): bool {
+    public function collisionAction(GameEntity $entity):bool {
         
-        $mob->pickupItem($this);
+        if (!($entity instanceof Mob)){
+            return false;
+        }
+        
+        $entity->pickupItem($this);
+        
         return true;
     }
 }

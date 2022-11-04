@@ -3,37 +3,16 @@
 namespace Phprpg\Core\Entities\Storage;
 
 /**
- * Description of StorageStorage
+ * Description of StorageBundle
  * 
- * Storage that stores storages... Maybe it should be StorageWarehouse? Lol. But actually... StorageStorage is not a child of GameEntityStorage, so it is kind of not storage
- * Ah, maybe, StorageBundle? But Bundle is something from Symfony or whatever
- *
- * it's supposed to accept a bunch of GameEntityStorage objects and be responsible for their intersection
+ * organize storages into single array to perform collision stuff better
  * 
  * 
- * ok what was i about to do...
- * i think... 
- * uhhh...
- * ummm...
+ * eh, i feel like this callable crutch i came up with is Worse than the good old class check
+ * class check: 'Phprpg\Core\Entities\PushableBlock' != get_class($entity), if yes run moveBlock
+ * if callable crutch: each class must have useless callable, 2 more methods, shit looking call user func thing... eeeh
+ * better go back to original crutch
  * 
- * so entities should have a method like 
- * beInteractedWith or beAffectedBy, getSteppedOn, getPushedBy... maybe receiveActionFrom
- * getTriggeredBy - huh! 
- * 
- * that would affect entity and the incoming mob
- * 
- * soo...
- * 
- * like Tile - checks if walkable
- * Mob - getAttacked, something like that
- * item -> action , we have it like this i guess
- * 
- * but... what should it accept? what should it return?
- * 
- * and how do i process interaction that concerns multiple entities?
- * 
- * llike, checked if the tile is walkable, then checked if there is a mob ther to attack
- * uuuh i haven't touched this code for a bit too long
  */
 class StorageBundle {
     
@@ -43,22 +22,53 @@ class StorageBundle {
         
     }
     
-    public function addStorage(string $storage_type, GameEntityStorage $storage){
+    public function addStorage(string $storage_type, GameEntityStorage $storage):void{
         $this->storages[$storage_type] = $storage;
     }
     
-    public function moveMob(Mob $mob, Coordinates $mobCoords, Coordinates $newCoords){
+    public function moveEntity(GameEntity $entity, Coordinates $mobCoords, Coordinates $newCoords){
         
         foreach ($this->storages as $storage_type => $storage){
             if ($storedEntity = $storage->getEntity($newCoords)){
-                 if (!$storedEntity->receiveAction($mob)){
-                     return false;
-                 }
+                    
+                if ('Phprpg\Core\Entities\PushableBlock' != get_class($storedEntity)){
+                    
+                    if (!($storedEntity->collisionAction($entity))){
+                        return false;
+                    }
+                    
+                } else {
+                    if (!($this->movePushableBlock($storedEntity,$mobCoords,$newCoords))){
+                        return false;
+                    }
+                }
                  
             }
         }
         
+        
+        
         $this->getStorage('Mob')->moveEntity($mob,$mobCoords,$newCoords);
+        
+        return true;
+    }
+    
+    public function getStorage(string $storage_type):?GameEntityStorage{
+        
+        if (!empty($this->storages[$storage_type])){
+            return $this->storages[$storage_type];
+        }
+        
+        return null;
+    }
+    
+    
+    private function movePushableBlock(PushableBlock $block, Coordinates $pushFromCoords, Coordinates $pushToCoords){
+        
+        $pushDirection = DirectionTools::getDirectionFromAtoB($pushFromCoords,$pushToCoords);
+        $newBlockCoordinates = DirectionTools::$pushDirection($pushToCoords);
+        
+        $this->moveEntity($block,$pushToCoords,$newBlockCoordinates);
         
     }
 }

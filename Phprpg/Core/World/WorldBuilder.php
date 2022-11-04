@@ -13,7 +13,7 @@ namespace Phprpg\Core\World;
 * @author     nikitaolp
 */
 use Phprpg\Core\{Lo,AppStorage};
-use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,GameEntityFactory};
+use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,GameEntityFactory,PushableBlockFactory};
 use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
 use Phprpg\Core\Turns\Coordinates;
@@ -32,14 +32,17 @@ class WorldBuilder {
     
     private array $deadPlayers = [];
     
+    
     public function __construct(
             private TileFactory $tileAssembler, 
             private MobFactory $mobAssembler,
             private PlayerFactory $playerAssembler,
             private ItemFactory $itemAssembler,
+            private PushableBlockFactory $pushableBlockAssembler,
             private TileStorage $tileStorage,
             private MobStorage $mobStorage,
-            private GameEntityStorage $itemStorage
+            private GameEntityStorage $itemStorage,
+            private GameEntityStorage $pushableBlockStorage
             ){
         
             $this->height = AppStorage::get('cfg','height');
@@ -49,6 +52,7 @@ class WorldBuilder {
             $this->mobAssembler->fromArray(AppStorage::get('mobs'));
             $this->itemAssembler->fromArray(AppStorage::get('items'));
             $this->playerAssembler->fromArray(AppStorage::get('players'));
+            $this->pushableBlockAssembler->fromArray(AppStorage::get('pushables'));
             
     }
     
@@ -90,6 +94,10 @@ class WorldBuilder {
     
     public function getItemStorage():GameEntityStorage{
         return $this->itemStorage;
+    }
+    
+    public function getPushableBlockStorage():GameEntityStorage{
+        return $this->pushableBlockStorage;
     }
     
     
@@ -327,6 +335,9 @@ class WorldBuilder {
         $items = clone $this->itemStorage;
         $items->clearStorage();
         
+        $pushables = clone $this->pushableBlockStorage;
+        $pushables->clearStorage();
+        
         $this->playerSpawnCoordinates = [];
         
         
@@ -360,6 +371,11 @@ class WorldBuilder {
 
                                 case '4':
                                     $mobs->storeAtXY($this->mobAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
+                                break;
+                            
+                                case '5':
+                                    $pushables->storeAtXY($this->pushableBlockAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
+                                    Lo::g($this->getPushableBlockStorage()->getEntityByXY($x,$y));
                                 break;
                                 
                                 case '9':
@@ -405,6 +421,9 @@ class WorldBuilder {
 
         
         $this->itemStorage = $items;
+        
+        $this->pushableBlockStorage = $pushables;
+        
         $this->victoryDefeat = null;
         
         

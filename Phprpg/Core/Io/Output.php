@@ -178,6 +178,11 @@ class Output {
                                     title='{$item->getName()}' 
                                     class='mobImg coordX_{$x} coordY_{$y}' 
                                     src='/Phprpg/Resources/Gfx/{$item->getGfx()}'></span>";
+                            } else if ($pushable = $this->world->getPushableBlockStorage()->getEntityByXY($x,$y)){
+                                $gfxMap .= "<span class='itemHelper'><img 
+                                    title='{$pushable->getName()}' 
+                                    class='mobImg coordX_{$x} coordY_{$y}' 
+                                    src='/Phprpg/Resources/Gfx/{$pushable->getGfx()}'></span>";
                             } else {
                                 $gfxMap .= "<span class='emptyHelper'></span>";
                             }

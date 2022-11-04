@@ -225,4 +225,21 @@ class DirectionTools {
         }
         return false;
     }
+    
+    public static function getDirectionFromAtoB(Coordinates $a, Coordinates $b){
+        
+        if ($a->getX == $b->getX()){
+            if ($a->getY() > $b->getY()){
+                return 'north';
+            } else {
+                return 'south';
+            }
+        } else if ($a->getY() == $b->getY()){
+            if ($a->getX() > $b->getX()){
+                return 'west';
+            } else {
+                return 'east';
+            }
+        }
+    }
 }
