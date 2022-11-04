@@ -9,13 +9,18 @@ namespace Phprpg\Core\World;
 * Since this object is pretty much the only thing stored in DB, it should be more like WorldState, with all the building functions moved to some LevelBuilder class
 * but I'm keeping it like this for now
 * 
+ * 
+ * private TileStorage $tileStorage,
+            private MobStorage $mobStorage,
+            private GameEntityStorage $itemStorage,
+            private GameEntityStorage $pushableBlockStorage
 * @package    phprpg
 * @author     nikitaolp
 */
 use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,GameEntityFactory,PushableBlockFactory};
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
-use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage,StorageBundle};
+use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player,PushableBlock};
 use Phprpg\Core\Turns\Coordinates;
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat};
 
@@ -39,10 +44,7 @@ class WorldBuilder {
             private PlayerFactory $playerAssembler,
             private ItemFactory $itemAssembler,
             private PushableBlockFactory $pushableBlockAssembler,
-            private TileStorage $tileStorage,
-            private MobStorage $mobStorage,
-            private GameEntityStorage $itemStorage,
-            private GameEntityStorage $pushableBlockStorage
+            private StorageBundle $storage
             ){
         
             $this->height = AppStorage::get('cfg','height');
@@ -80,29 +82,35 @@ class WorldBuilder {
 
     }
     
+    
+    //storage related methods should go inside storage bundle class but that's for late
     public function getWorldTiles():array{
-        return $this->tileStorage->getEntities();
+        return $this->storage->getStorage('Tile')->getEntities();
     }
     
     public function getMobs():array{
-        return $this->mobStorage->getEntities();
+        return $this->storage->getStorage('Mob')->getEntities();
     }
     
     public function getMobStorage():GameEntityStorage{
-        return $this->mobStorage;
+        return $this->storage->getStorage('Mob');
     }
     
     public function getItemStorage():GameEntityStorage{
-        return $this->itemStorage;
+        return $this->storage->getStorage('Item');
     }
     
     public function getPushableBlockStorage():GameEntityStorage{
-        return $this->pushableBlockStorage;
+        return $this->storage->getStorage('PushableBlock');
     }
     
     
     public function getTileStorage():TileStorage{
-        return $this->tileStorage;
+        return $this->storage->getStorage('Tile');
+    }
+    
+    public function getStorageBundle(){
+        return $this->storage;
     }
     
     
@@ -139,7 +147,7 @@ class WorldBuilder {
             
             if ($this->getTileStorage()->checkTileWalkability($coord) && !$this->getMobStorage()->getEntity($coord)){
                 
-                $this->mobStorage->storeAtXY($new_player,$coord->getX(),$coord->getY());
+                $this->storage->getStorage('Mob')->storeAtXY($new_player,$coord->getX(),$coord->getY());
                 
                 return $new_player;
             }
@@ -151,14 +159,14 @@ class WorldBuilder {
     
     private function  addPlayerRandom():?Player{
         
-        $random_location = $this->tileStorage->getRandomTileCoordinates();
-        $surroundingTiles = $this->tileStorage->getSurroundingEntities($random_location,5);
+        $random_location = $this->storage->getStorage('Tile')->getRandomTileCoordinates();
+        $surroundingTiles = $this->storage->getStorage('Tile')->getSurroundingEntities($random_location,5);
 
         foreach($surroundingTiles as $y => $line){
             
 
             foreach ($line as $x=>$tile){
-                if ($player = $this->tryToFillTile($tile,$this->mobStorage,$this->playerAssembler, $x, $y)){
+                if ($player = $this->tryToFillTile($tile,$this->storage->getStorage('Mob'),$this->playerAssembler, $x, $y)){
                     
                     return $player;   
                 }
@@ -184,15 +192,15 @@ class WorldBuilder {
                            throw new Exception("Random tile is null, default tile with 100 chance likely not set in cfg");
                        } else {
                            
-                           $this->tileStorage->storeAtXY($randomTile, $w, $h);
+                           $this->storage->getStorage('Tile')->storeAtXY($randomTile, $w, $h);
                            
-                           //$this->tileStorage->getEntities();
-                           //$this->tileStorage->getEntityByXY()
+                           //$this->storage->getStorage('Tile')->getEntities();
+                           //$this->storage->getStorage('Tile')->getEntityByXY()
                            
                            //$this->worldArray[$h][$w] = $randomTile;
                            
-                           if (!$this->tryToFillTile($this->tileStorage->getEntityByXY($w,$h),$this->mobStorage,$this->mobAssembler, $w, $h)){
-                               $this->tryToFillTile($this->tileStorage->getEntityByXY($w,$h),$this->itemStorage,$this->itemAssembler, $w, $h);
+                           if (!$this->tryToFillTile($this->storage->getStorage('Tile')->getEntityByXY($w,$h),$this->storage->getStorage('Mob'),$this->mobAssembler, $w, $h)){
+                               $this->tryToFillTile($this->storage->getStorage('Tile')->getEntityByXY($w,$h),$this->storage->getStorage('Item'),$this->itemAssembler, $w, $h);
                            }
                            
 
@@ -202,15 +210,15 @@ class WorldBuilder {
             
         }
         
-     $this->maxMobCount = $this->mobStorage->getAllEntityCount();   
-     $this->maxItemCount = $this->itemStorage->getAllEntityCount();  
+     $this->maxMobCount = $this->storage->getStorage('Mob')->getAllEntityCount();   
+     $this->maxItemCount = $this->storage->getStorage('Item')->getAllEntityCount();  
 
     }
     
     public function tryToFillTile(Tile $tile, GameEntityStorage $storage, GameEntityFactory $factory, $x, $y):?GameEntity{
         
         
-        if ($tile->isWalkable() && !($this->mobStorage->getEntityByXY($x,$y)) && !($this->itemStorage->getEntityByXY($x,$y)) ){
+        if ($tile->isWalkable() && !($this->storage->getStorage('Mob')->getEntityByXY($x,$y)) && !($this->storage->getStorage('Item')->getEntityByXY($x,$y)) ){
             $mob = $factory->tryToGetRandom();
             if ($mob){
                 $storage->storeAtXY($mob,$x,$y);
@@ -223,8 +231,8 @@ class WorldBuilder {
     
     
     public function topUpEntities():void{
-        $this->tryToSpawnEntities($this->itemStorage,$this->itemAssembler,$this->maxItemCount);
-        $this->tryToSpawnEntities($this->mobStorage,$this->mobAssembler,$this->maxMobCount);
+        $this->tryToSpawnEntities($this->storage->getStorage('Item'),$this->itemAssembler,$this->maxItemCount);
+        $this->tryToSpawnEntities($this->storage->getStorage('Mob'),$this->mobAssembler,$this->maxMobCount);
     }
     
     
@@ -234,9 +242,9 @@ class WorldBuilder {
         
         if ($remainingItems < round(($max_count/100)*50)){
             
-            $random_location = $this->tileStorage->getRandomTileCoordinates();
+            $random_location = $this->storage->getStorage('Tile')->getRandomTileCoordinates();
             
-            $surroundingTiles = $this->tileStorage->getSurroundingEntities($random_location,5);
+            $surroundingTiles = $this->storage->getStorage('Tile')->getSurroundingEntities($random_location,5);
 
             foreach($surroundingTiles as $y => $line){
 
@@ -256,7 +264,7 @@ class WorldBuilder {
     //old repopulation method that used map edges, more realistic, but impractical on larger maps as all the action happened on the edges and the center was empty
     public function tryToRepopulate():void{
         
-        $remainingMobs = $this->mobStorage->getAllEntityCount();
+        $remainingMobs = $this->storage->getStorage('Mob')->getAllEntityCount();
         
         
 
@@ -264,11 +272,11 @@ class WorldBuilder {
             
            
             
-            foreach($this->tileStorage->getEntities() as $y => $line){
+            foreach($this->storage->getStorage('Tile')->getEntities() as $y => $line){
 
                     foreach ($line as $x=>$tile){
-                        if ($y == 0 || $y == array_key_last($this->tileStorage->getEntities()) || $x == 0 || $x == array_key_last($line)){
-                            $this->tryToFillTile($tile,$this->mobStorage,$this->mobAssembler, $x, $y);
+                        if ($y == 0 || $y == array_key_last($this->storage->getStorage('Tile')->getEntities()) || $x == 0 || $x == array_key_last($line)){
+                            $this->tryToFillTile($tile,$this->storage->getStorage('Mob'),$this->mobAssembler, $x, $y);
                         }
                         
                     }
@@ -315,8 +323,8 @@ class WorldBuilder {
             $this->buildFromLevelArray($this->level->getEntityIdArray());
         } else {
             
-            $this->maxMobCount = $this->mobStorage->getAllEntityCount();   
-            $this->maxItemCount = $this->itemStorage->getAllEntityCount(); 
+            $this->maxMobCount = $this->storage->getStorage('Mob')->getAllEntityCount();   
+            $this->maxItemCount = $this->storage->getStorage('Item')->getAllEntityCount(); 
             
             $this->buildRandom();
         }
@@ -326,16 +334,16 @@ class WorldBuilder {
     
     private function buildFromLevelArray(array $level_array):void{
         
-        $tiles = clone $this->tileStorage;
+        $tiles = clone $this->storage->getStorage('Tile');
         $tiles->clearStorage();
         
-        $mobs = clone $this->mobStorage;
+        $mobs = clone $this->storage->getStorage('Mob');
         $mobs->clearStorage();
         
-        $items = clone $this->itemStorage;
+        $items = clone $this->storage->getStorage('Item');
         $items->clearStorage();
         
-        $pushables = clone $this->pushableBlockStorage;
+        $pushables = clone $this->storage->getStorage('PushableBlock');
         $pushables->clearStorage();
         
         $this->playerSpawnCoordinates = [];
@@ -414,15 +422,15 @@ class WorldBuilder {
             
         }
         
-        $this->tileStorage = $tiles;
+        $this->storage->setStorage('Tile',$tiles);
 
         
-        $this->mobStorage = $mobs;
+        $this->storage->setStorage('Mob',$mobs);
 
         
-        $this->itemStorage = $items;
+        $this->storage->setStorage('Item',$items);
         
-        $this->pushableBlockStorage = $pushables;
+        $this->storage->setStorage('PushableBlock',$pushables);
         
         $this->victoryDefeat = null;
         

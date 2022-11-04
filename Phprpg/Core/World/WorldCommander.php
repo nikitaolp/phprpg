@@ -19,7 +19,7 @@ use Phprpg\Core\{Lo,AppStorage};
 
 use Phprpg\Core\Turns\{DirectionTools,DirectionPriority,Coordinates,Attack};
 
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage,StorageBundle};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
 
 class WorldCommander {
@@ -187,25 +187,32 @@ class WorldCommander {
         return false;
     }
     
-    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):bool{
-        if ($this->world->getTileStorage()->checkTileWalkability($newCoordinates) && !$this->world->getMobStorage()->getEntity($newCoordinates)){
-
-            $mob->setDirection($direction);
-
-            $this->world->getMobStorage()->moveEntity($mob,$mobCoords,$newCoordinates);
-
-            if ($item = $this->world->getItemStorage()->getEntity($newCoordinates)){
-                $mob->pickupItem($item);
-                $this->world->getItemStorage()->unsetEntity($newCoordinates);
-                if ('Phprpg\Core\Entities\Player' == get_class($mob) && $mob->isExpired()){
-                    $this->world->addDeadPlayer($mob->getId());
-                }
-            }
-            return true;
-        }
-        return false;
-    }
+//    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):bool{
+//        if ($this->world->getTileStorage()->checkTileWalkability($newCoordinates) && !$this->world->getMobStorage()->getEntity($newCoordinates)){
+//
+//            $mob->setDirection($direction);
+//
+//            $this->world->getMobStorage()->moveEntity($mob,$mobCoords,$newCoordinates);
+//
+//            if ($item = $this->world->getItemStorage()->getEntity($newCoordinates)){
+//                $mob->pickupItem($item);
+//                $this->world->getItemStorage()->unsetEntity($newCoordinates);
+//                if ('Phprpg\Core\Entities\Player' == get_class($mob) && $mob->isExpired()){
+//                    $this->world->addDeadPlayer($mob->getId());
+//                }
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
     
+    
+    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):bool{
+        
+        $mob->setDirection($direction);
+        
+        return $this->world->getStorageBundle()->moveEntity($mob, $mobCoords, $newCoordinates);
+    }
  
     public function addPlayer():void{
         if (empty($this->current_player_coordinates)){

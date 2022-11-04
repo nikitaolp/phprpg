@@ -1,7 +1,9 @@
 <?php
 
 namespace Phprpg\Core\Entities\Storage;
-
+use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player,PushableBlock};
+use Phprpg\Core\Turns\{DirectionTools,Coordinates};
+use Phprpg\Core\{Lo};
 /**
  * Description of StorageBundle
  * 
@@ -18,15 +20,25 @@ class StorageBundle {
     
     private array $storages;
     
-    public function __construct(){
+    public function __construct(array $storages_to_add = []){
+        
+        if (!empty($storages_to_add)){
+            foreach ($storages_to_add as $type => $storage){
+                $this->setStorage($type,$storage);
+            }
+        }
         
     }
     
-    public function addStorage(string $storage_type, GameEntityStorage $storage):void{
+    public function setStorage(string $storage_type, GameEntityStorage $storage):void{
         $this->storages[$storage_type] = $storage;
     }
     
     public function moveEntity(GameEntity $entity, Coordinates $mobCoords, Coordinates $newCoords){
+        
+        if (empty($this->getStorage('Tile')->getEntity($newCoords))){
+            return false;
+        }
         
         foreach ($this->storages as $storage_type => $storage){
             if ($storedEntity = $storage->getEntity($newCoords)){
@@ -47,8 +59,15 @@ class StorageBundle {
         }
         
         
+        $entity_class_name = substr(strrchr(get_class($entity), '\\'), 1);
+
+        if ($entity_class_name != 'PushableBlock'){
+            $this->getStorage('Mob')->moveEntity($entity,$mobCoords,$newCoords);
+        } else {
+            $this->getStorage($entity_class_name)->moveEntity($entity,$mobCoords,$newCoords);
+        }
         
-        $this->getStorage('Mob')->moveEntity($mob,$mobCoords,$newCoords);
+        
         
         return true;
     }
@@ -68,7 +87,7 @@ class StorageBundle {
         $pushDirection = DirectionTools::getDirectionFromAtoB($pushFromCoords,$pushToCoords);
         $newBlockCoordinates = DirectionTools::$pushDirection($pushToCoords);
         
-        $this->moveEntity($block,$pushToCoords,$newBlockCoordinates);
+        return $this->moveEntity($block,$pushToCoords,$newBlockCoordinates);
         
     }
 }

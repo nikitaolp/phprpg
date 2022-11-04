@@ -228,7 +228,7 @@ class DirectionTools {
     
     public static function getDirectionFromAtoB(Coordinates $a, Coordinates $b){
         
-        if ($a->getX == $b->getX()){
+        if ($a->getX() == $b->getX()){
             if ($a->getY() > $b->getY()){
                 return 'north';
             } else {

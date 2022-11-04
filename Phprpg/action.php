@@ -7,7 +7,7 @@ use Phprpg\Core\State\{Database,GameState};
 use Phprpg\Core\Io\{Input,Output};
 use Phprpg\Core\World\{WorldBuilder,WorldCommander,Level,LevelManager};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,PushableBlockFactory};
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage,StorageBundle};
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat,VictoryDefeatManager};
 
 session_start();
@@ -49,11 +49,14 @@ if ($state->isGameStarted()){
                     new PlayerFactory(), 
                     new ItemFactory(), 
                     new PushableBlockFactory(), 
-                    new TileStorage(), 
-                    new MobStorage(), 
-                    new GameEntityStorage(),
-                    new GameEntityStorage()
+                    new StorageBundle([
+                        'Tile' => new TileStorage(), 
+                        'Mob' => new MobStorage(), 
+                        'Item' => new GameEntityStorage(),
+                        'PushableBlock' =>new GameEntityStorage()
+                    ])
                 );
+
 
         //$world->build();
         
