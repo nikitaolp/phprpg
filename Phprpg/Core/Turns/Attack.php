@@ -14,6 +14,7 @@ class Attack {
     
     private function fight():void{
         $this->defender->affectHp(-1*$this->attacker->getDmg());
+        
         $this->attacker->addStatus('attack');
         if ($this->defender->isExpired()){
             Lo::gG("<span class='logColor1'>{$this->attacker->getNickname()}</span> killed <span class='logColor2'>{$this->defender->getNickname()}</span>");

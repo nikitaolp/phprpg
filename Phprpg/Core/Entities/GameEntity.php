@@ -47,5 +47,5 @@ abstract class GameEntity {
         return $this->expired;
     }
     
-    abstract function collisionAction(GameEntity $entity):bool;
+    abstract function collisionAction(GameEntity $entity):?bool;
 }

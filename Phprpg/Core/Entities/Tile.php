@@ -20,12 +20,12 @@ class Tile extends GameEntity{
         return $this->walkable;
     }
     
-    public function collisionAction(GameEntity $entity): Bool {
+    public function collisionAction(GameEntity $entity): ?bool {
         
         if ($this->isWalkable()){
             return true;
         }
         
-        return false;
+        return null;
     }
 }

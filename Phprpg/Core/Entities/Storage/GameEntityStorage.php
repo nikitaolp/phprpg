@@ -6,6 +6,7 @@
  */
 namespace Phprpg\Core\Entities\Storage;
 
+use Phprpg\Core\Lo;
 use Phprpg\Core\Entities\GameEntity;
 use Phprpg\Core\Turns\Coordinates;
 
@@ -110,9 +111,14 @@ class GameEntityStorage {
     }
     
     public function moveEntity(GameEntity $entity, Coordinates $oldCoord, Coordinates $newCoord):void{
+        
+        //if (empty($this->getEntity($newCoord)) || $this->getEntity($newCoord)->isExpired()){
+       //     Lo::gG("replacing existing entity");
+       // }
+       
         $this->storage[$newCoord->getY()][$newCoord->getX()] = $entity;
-        //unset($this->storage[$oldCoord->getY()][$oldCoord->getX()]);
         $this->unsetEntity($oldCoord);
+        
     }
     
     public function unsetEntity(Coordinates $coord){

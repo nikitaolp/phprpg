@@ -13,7 +13,7 @@ class PushableBlock extends GameEntity {
     }
     
     public function collisionAction(GameEntity $entity): bool {
-        return false;
+        return null;
     }
     
 }

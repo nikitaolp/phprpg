@@ -2,6 +2,7 @@
 namespace Phprpg\Core\Entities;
 
 use Phprpg\Core\{Lo,AppStorage};
+use Phprpg\Core\Turns\{Attack};
 
 class Mob extends GameEntity{
     
@@ -228,10 +229,10 @@ class Mob extends GameEntity{
         
     }
     
-    public function collisionAction(GameEntity $entity):bool{
+    public function collisionAction(GameEntity $entity):?bool{
         
         if (!($entity instanceof Mob)){
-            return false;
+            return null;
         }
         
         if ($entity->getTeam() != $this->getTeam()){
@@ -241,9 +242,11 @@ class Mob extends GameEntity{
             if ($this->isExpired()){
                 return true;
             }
+            
+            return false;
         }
         
-        return false;
+        return null;
     }
     
 }

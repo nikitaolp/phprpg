@@ -49,8 +49,7 @@ if ($state->isGameStarted()){
                     new PlayerFactory(), 
                     new ItemFactory(), 
                     new PushableBlockFactory(), 
-                    new StorageBundle([
-                        'Tile' => new TileStorage(), 
+                    new StorageBundle(new TileStorage(),[
                         'Mob' => new MobStorage(), 
                         'Item' => new GameEntityStorage(),
                         'PushableBlock' =>new GameEntityStorage()

@@ -9,7 +9,7 @@
  */
 
 namespace Phprpg\Core\Turns;
-
+use Phprpg\Core\{Lo};
 use Phprpg\Core\Turns\{Coordinates};
 
 class DirectionTools {

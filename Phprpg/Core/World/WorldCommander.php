@@ -91,9 +91,7 @@ class WorldCommander {
             if ($direction){
                 $newCoordinates = DirectionTools::$direction($mobCoords);
 
-                if ($this->attackCheck($direction,$mob,$newCoordinates)){
-
-                } else if ($this->moveCheck($direction,$mob,$mobCoords,$newCoordinates)){
+                if ($this->moveCheck($direction,$mob,$mobCoords,$newCoordinates)){
 
                     $this->current_player_coordinates = $newCoordinates;
 
@@ -142,10 +140,7 @@ class WorldCommander {
                         
                     $newCoordinates = DirectionTools::$direction($mobCoords);
 
-                    if ($this->attackCheck($direction,$mob,$newCoordinates)){
-                        $turnActionComplete = true;
-                        break;
-                    } else if ($this->moveCheck($direction,$mob,$mobCoords,$newCoordinates)){
+                    if (!is_null($this->moveCheck($direction,$mob,$mobCoords,$newCoordinates))){
                         $turnActionComplete = true;
                         break;
                     }
@@ -207,11 +202,13 @@ class WorldCommander {
 //    }
     
     
-    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):bool{
+    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):?bool{
+        
+        //Lo::gG($mob->getNickname()." tries to move from {$mobCoords} to {$newCoordinates}");
         
         $mob->setDirection($direction);
         
-        return $this->world->getStorageBundle()->moveEntity($mob, $mobCoords, $newCoordinates);
+        return $this->world->getStorageBundle()->moveEntityV3($mob, $mobCoords, $newCoordinates);
     }
  
     public function addPlayer():void{
