@@ -182,25 +182,6 @@ class WorldCommander {
         return false;
     }
     
-//    private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):bool{
-//        if ($this->world->getTileStorage()->checkTileWalkability($newCoordinates) && !$this->world->getMobStorage()->getEntity($newCoordinates)){
-//
-//            $mob->setDirection($direction);
-//
-//            $this->world->getMobStorage()->moveEntity($mob,$mobCoords,$newCoordinates);
-//
-//            if ($item = $this->world->getItemStorage()->getEntity($newCoordinates)){
-//                $mob->pickupItem($item);
-//                $this->world->getItemStorage()->unsetEntity($newCoordinates);
-//                if ('Phprpg\Core\Entities\Player' == get_class($mob) && $mob->isExpired()){
-//                    $this->world->addDeadPlayer($mob->getId());
-//                }
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
-    
     
     private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):?bool{
         
@@ -208,7 +189,7 @@ class WorldCommander {
         
         $mob->setDirection($direction);
         
-        return $this->world->getStorageBundle()->moveEntityV3($mob, $mobCoords, $newCoordinates);
+        return $this->world->getStorageBundle()->collisionActionCheck($mob, $mobCoords, $newCoordinates);
     }
  
     public function addPlayer():void{

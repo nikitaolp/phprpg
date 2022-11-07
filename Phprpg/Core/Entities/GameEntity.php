@@ -46,6 +46,8 @@ abstract class GameEntity {
     public function isExpired():bool{
         return $this->expired;
     }
-    
+    /**
+     * checks for entity's action when it's being collided by another entity. TRUE if action completed and new entity is allowed to replace this entity, FALSE if action performed but no move, and NULL if action didn't happen
+     */
     abstract function collisionAction(GameEntity $entity):?bool;
 }
