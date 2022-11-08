@@ -34,8 +34,8 @@ class GameEntityStorage {
     public function getEntityByXY($x,$y):?GameEntity{
         if(!empty($this->storage[$y][$x])){
             
-            if ($this->storage[$y][$x]->isExpired()){
-                $this->unsetEntity(new Coordinates($x,$y));
+            
+            if (!$this->isEntityActive($x, $y)){
                 return null;
             }
             
@@ -97,11 +97,11 @@ class GameEntityStorage {
         foreach ($this->storage as $y=>$yval){
             
             foreach ($yval as $x =>$val){
-                if ($val->isExpired()){
-                    $this->unsetEntity(new Coordinates($x,$y));
-                } else {
+                
+                if ($this->isEntityActive($x, $y)){
                     $count++;
                 }
+                
                 
             } 
             
@@ -112,12 +112,11 @@ class GameEntityStorage {
     
     public function moveEntity(GameEntity $entity, Coordinates $oldCoord, Coordinates $newCoord):void{
         
-        //if (empty($this->getEntity($newCoord)) || $this->getEntity($newCoord)->isExpired()){
-       //     Lo::gG("replacing existing entity");
-       // }
-       
-        $this->storage[$newCoord->getY()][$newCoord->getX()] = $entity;
-        $this->unsetEntity($oldCoord);
+        if ($this->isEntityActive($oldCoord->getX(), $oldCoord->getY())){
+            $this->storage[$newCoord->getY()][$newCoord->getX()] = $entity;
+        }
+        
+        unset($this->storage[$oldCoord->getY()][$oldCoord->getX()]);
         
     }
     
@@ -133,6 +132,24 @@ class GameEntityStorage {
     public function clearStorage():void{
         $this->storage = [];
     }
-
+    /**
+     * need this wrapper to replace all existing expiration checks. so i could override and do actions before unsetting
+     * @param int $x
+     * @param int $y
+     * @return bool
+     */
+    private function isEntityActive(int $x,int $y):bool{
+        
+        if (empty($this->storage[$y][$x])){
+            return false;
+        }
+        
+        if ($this->storage[$y][$x]->isExpired()){
+            $this->unsetEntity(new Coordinates($x, $y));
+            return false;
+        }
+        
+        return true;
+    }
     
 }

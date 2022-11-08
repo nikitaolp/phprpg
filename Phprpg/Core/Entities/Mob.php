@@ -240,7 +240,7 @@ class Mob extends GameEntity{
             $atck = new Attack($entity,$this);
             
             if ($this->isExpired()){
-                return true;
+                return false;
             }
             
             return false;

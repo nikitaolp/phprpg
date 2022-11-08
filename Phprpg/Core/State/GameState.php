@@ -116,7 +116,7 @@ class GameState {
         
         if ($all_players){
             foreach ($all_players as $turn_order=>$pl){
-                if (!$this->world->isPlayerDead($pl['id'])){
+                if (!$this->world->getStorageBundle()->getPlayerStorage()->isPlayerDead($pl['id'])){
                     $max = $turn_order;
                     $alive_player_found = true;
                     break;
@@ -327,7 +327,7 @@ class GameState {
 
         if ($all_players){
 
-            if ($this->world->isPlayerDead($all_players[$current_turn_order]['id'])){
+            if ($this->world->getStorageBundle()->getPlayerStorage()->isPlayerDead($all_players[$current_turn_order]['id'])){
                 $all_players_sorted = $all_players;
 
 

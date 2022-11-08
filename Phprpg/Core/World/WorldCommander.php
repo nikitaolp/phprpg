@@ -19,7 +19,7 @@ use Phprpg\Core\{Lo,AppStorage};
 
 use Phprpg\Core\Turns\{DirectionTools,DirectionPriority,Coordinates,Attack};
 
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage,StorageBundle};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,PlayerStorage,GameEntityStorage,StorageBundle};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
 
 class WorldCommander {
@@ -38,23 +38,20 @@ class WorldCommander {
     
     public function findPlayerCoordinates():void{
 
-        $mobs = $this->world->getMobs();
+        $mobs = $this->world->getStorageBundle()->getPlayers();
         
         
         //ok so first we try to make turn for a player with given ID
 
-        if (!$this->world->isPlayerDead($this->player_id)){
+        if (!$this->world->getStorageBundle()->getPlayerStorage()->isPlayerDead($this->player_id)){
             
             foreach ($mobs as $y => $line){
 
                 foreach ($line as $x => $mob){
-                    //these class checks are bad
-                    if ('Phprpg\Core\Entities\Player' != get_class($mob) || $mob->isExpired()){
-                        continue;
-                    }
 
                     if ($mob->getId() == $this->player_id){
 
+                        
                         
                         $mobCoords = new Coordinates($x,$y);
 
@@ -74,24 +71,27 @@ class WorldCommander {
 
     }
     
-    private function checkIfPlayerIsDead():void{
-        $player = $this->world->getMobStorage()->getEntity($this->current_player_coordinates);
-        
-        if (!$player || $player->isExpired()){
-            $this->world->addDeadPlayer($player->getId());
-        }
-    }
+//    private function checkIfPlayerIsDead():void{
+//        $player = $this->world->getStorageBundle()->getPlayerStorage()->getEntity($this->current_player_coordinates);
+//        
+//        if (!$player || $player->isExpired()){
+//            $this->world->getStorageBundle()->getPlayerStorage()->addDeadPlayer($player->getId());
+//        }
+//    }
     
     public function playerTurn():void{
+        
         if ($mobCoords = $this->current_player_coordinates){
-            $mob = $this->world->getMobStorage()->getEntity($mobCoords);
+            
+            $player = $this->world->getStorageBundle()->getPlayerStorage()->getEntity($mobCoords);
+            
 
-            $mob->removeStatus('attack');
+            $player->removeStatus('attack');
             $direction = $this->input->getDirection();
             if ($direction){
                 $newCoordinates = DirectionTools::$direction($mobCoords);
 
-                if ($this->moveCheck($direction,$mob,$mobCoords,$newCoordinates)){
+                if ($this->moveCheck($direction,$player,$mobCoords,$newCoordinates)){
 
                     $this->current_player_coordinates = $newCoordinates;
 
@@ -112,7 +112,7 @@ class WorldCommander {
         //self descriptive api-like method calls
         
         Lo::g("Mob loop start",'yellow');
-        $mobs = $this->world->getMobs();
+        $mobs = $this->world->getStorageBundle()->getMobs();
 
         
         //and then we should process mob turns, IF the current player turn is the last turn
@@ -120,9 +120,6 @@ class WorldCommander {
             
             foreach ($line as $x => $mob){
 
-                if ('Phprpg\Core\Entities\Mob' != get_class($mob) || $mob->isExpired()){
-                    continue;
-                }
                 
                 $turnActionComplete = false;
                 
@@ -131,7 +128,7 @@ class WorldCommander {
                 $mobCoords = new Coordinates($x,$y);
                 
                 
-                $dirprior = new DirectionPriority($mob,$mobCoords,$this->world->getMobStorage(),$this->world->getItemStorage());
+                $dirprior = new DirectionPriority($mob,$mobCoords,$this->world->getStorageBundle()->getMobStorage(),$this->world->getStorageBundle()->getItemStorage(),$this->world->getStorageBundle()->getPlayerStorage());
                 $movePriorities = $dirprior->getDirectionPriorities();
                 
                 
@@ -165,22 +162,22 @@ class WorldCommander {
     
     
     
-    private function attackCheck($direction,$mob,$newCoordinates):bool{
-        if ($defender = $this->world->getMobStorage()->checkForAttackableMob($mob,$newCoordinates)){
-            $mob->setDirection($direction);
-            $atck = new Attack($mob,$defender);
-
-            if ($defender->isExpired()){
-                
-                if ('Phprpg\Core\Entities\Player' == get_class($defender)){
-                    $this->world->addDeadPlayer($defender->getId());
-                }
-                $this->world->getMobStorage()->unsetEntity($newCoordinates);
-            }
-            return true;
-        }
-        return false;
-    }
+//    private function attackCheck($direction,$mob,$newCoordinates):bool{
+//        if ($defender = $this->world->getStorageBundle()->getMobStorage()->checkForAttackableMob($mob,$newCoordinates)){
+//            $mob->setDirection($direction);
+//            $atck = new Attack($mob,$defender);
+//
+//            if ($defender->isExpired()){
+//                
+//                if ('Phprpg\Core\Entities\Player' == get_class($defender)){
+//                    $this->world->addDeadPlayer($defender->getId());
+//                }
+//                $this->world->getStorageBundle()->getMobStorage()->unsetEntity($newCoordinates);
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
     
     
     private function moveCheck($direction,$mob,$mobCoords,$newCoordinates):?bool{

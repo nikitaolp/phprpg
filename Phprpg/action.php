@@ -7,7 +7,7 @@ use Phprpg\Core\State\{Database,GameState};
 use Phprpg\Core\Io\{Input,Output};
 use Phprpg\Core\World\{WorldBuilder,WorldCommander,Level,LevelManager};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,PushableBlockFactory};
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage,StorageBundle};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,PlayerStorage,GameEntityStorage,StorageBundle};
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat,VictoryDefeatManager};
 
 session_start();
@@ -52,7 +52,8 @@ if ($state->isGameStarted()){
                     new StorageBundle(new TileStorage(),[
                         'Mob' => new MobStorage(), 
                         'Item' => new GameEntityStorage(),
-                        'PushableBlock' =>new GameEntityStorage()
+                        'PushableBlock' =>new GameEntityStorage(),
+                        'Player' => new PlayerStorage()
                     ])
                 );
 
@@ -138,7 +139,7 @@ if ($state->isGameStarted()){
     if ($my_turn){
         
 
-        if (in_array($input_action,['move','skip']) || $world->isPlayerDead($state->getPlayerId())){
+        if (in_array($input_action,['move','skip']) || $world->getStorageBundle()->getPlayerStorage()->isPlayerDead($state->getPlayerId())){
 
             $worldCommander->playerTurn();
             
@@ -208,7 +209,7 @@ if ($state->isGameStarted()){
     $output->setJoinCode($state->getJoinCode());
     
     
-    if ($world->isPlayerDead($state->getPlayerId())){
+    if ($world->getStorageBundle()->getPlayerStorage()->isPlayerDead($state->getPlayerId())){
         $output->setTurnMessage("You are DEAD!!!");
     }
     
@@ -217,7 +218,7 @@ if ($state->isGameStarted()){
 
     $output->setVictoryDefeatMessage($world->getVictoryDefeat()->getMessage());
     
-    Lo::g("Mobs left ".$world->getMobStorage()->getAllEntityCount());
+    Lo::g("Mobs left ".$world->getStorageBundle()->getMobStorage()->getAllEntityCount());
 }
 
 

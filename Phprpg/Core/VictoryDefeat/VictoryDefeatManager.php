@@ -12,7 +12,7 @@
 
 namespace Phprpg\Core\VictoryDefeat;
 use Phprpg\Core\World\WorldBuilder;
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,PlayerStorage,GameEntityStorage};
 use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
 use Phprpg\Core\Turns\{Coordinates};
@@ -84,10 +84,10 @@ class VictoryDefeatManager {
             
             switch ($target) {
                 case 'Phprpg\Core\Entities\Player':
-                    $any_condition_true = $this->checkStorageForCondition($this->world->getMobStorage(),'Phprpg\Core\Entities\Player',$conditions);
+                    $any_condition_true = $this->checkStorageForCondition($this->world->getStorageBundle()->getPlayerStorage(),'Phprpg\Core\Entities\Player',$conditions);
                     break;
                 case 'Phprpg\Core\Entities\Mob':
-                    $any_condition_true = $this->checkStorageForCondition($this->world->getMobStorage(),'Phprpg\Core\Entities\Mob',$conditions);
+                    $any_condition_true = $this->checkStorageForCondition($this->world->getStorageBundle()->getMobStorage(),'Phprpg\Core\Entities\Mob',$conditions);
                     break;
                 case 'players':
                     $any_condition_true = $this->checkPlayers($conditions);
@@ -154,7 +154,7 @@ class VictoryDefeatManager {
         $condition_bool = false;
         //i guess i will just make a singel check and be done with this
         if (isset($conditions['all_dead'])){
-            if (count($this->world->getDeadPlayers()) >= AppStorage::get('cfg','player_limit')){
+            if (count($this->world->getStorageBundle()->getPlayerStorage()->getDeadPlayers()) >= AppStorage::get('cfg','player_limit')){
                 $condition_bool = true;
             }
         }

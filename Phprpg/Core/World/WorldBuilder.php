@@ -19,7 +19,7 @@ namespace Phprpg\Core\World;
 */
 use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\Entities\Factories\{TileFactory,MobFactory,PlayerFactory,ItemFactory,GameEntityFactory,PushableBlockFactory};
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage,StorageBundle};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,PlayerStorage,GameEntityStorage,StorageBundle};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player,PushableBlock};
 use Phprpg\Core\Turns\Coordinates;
 use Phprpg\Core\VictoryDefeat\{VictoryDefeat};
@@ -66,48 +66,6 @@ class WorldBuilder {
         return $this->victoryDefeat;
     }
     
-    public function getDeadPlayers():array{
-        return $this->deadPlayers;
-    }
-    
-    public function isPlayerDead(int $id):bool{
-
-        return in_array($id,$this->deadPlayers);
-       
-    }
-    
-    public function addDeadPlayer(int $id):void{
-        
-        $this->deadPlayers[] = $id;
-
-    }
-    
-    
-    //storage related methods should go inside storage bundle class but that's for late
-    public function getWorldTiles():array{
-        return $this->storage->getStorage('Tile')->getEntities();
-    }
-    
-    public function getMobs():array{
-        return $this->storage->getStorage('Mob')->getEntities();
-    }
-    
-    public function getMobStorage():GameEntityStorage{
-        return $this->storage->getStorage('Mob');
-    }
-    
-    public function getItemStorage():GameEntityStorage{
-        return $this->storage->getStorage('Item');
-    }
-    
-    public function getPushableBlockStorage():GameEntityStorage{
-        return $this->storage->getStorage('PushableBlock');
-    }
-    
-    
-    public function getTileStorage():TileStorage{
-        return $this->storage->getStorage('Tile');
-    }
     
     public function getStorageBundle(){
         return $this->storage;
@@ -145,9 +103,9 @@ class WorldBuilder {
         
         foreach ($this->playerSpawnCoordinates as $coord){
             
-            if ($this->getTileStorage()->checkTileWalkability($coord) && !$this->getMobStorage()->getEntity($coord)){
+            if ($this->storage->getTileStorage()->checkTileWalkability($coord) && !$this->storage->getMobStorage()->getEntity($coord)){
                 
-                $this->storage->getStorage('Mob')->storeAtXY($new_player,$coord->getX(),$coord->getY());
+                $this->storage->getStorage('Player')->storeAtXY($new_player,$coord->getX(),$coord->getY());
                 
                 return $new_player;
             }
@@ -166,7 +124,7 @@ class WorldBuilder {
             
 
             foreach ($line as $x=>$tile){
-                if ($player = $this->tryToFillTile($tile,$this->storage->getStorage('Mob'),$this->playerAssembler, $x, $y)){
+                if ($player = $this->tryToFillTile($tile,$this->storage->getStorage('Player'),$this->playerAssembler, $x, $y)){
                     
                     return $player;   
                 }
@@ -287,29 +245,6 @@ class WorldBuilder {
 
     }
     
-    private function getPlayers():array{
-
-        $mobs = $this->getMobs();
-        
-        $players = [];
-        
-        foreach ($mobs as $y => $line){
-
-            foreach ($line as $x => $mob){
-                //these class checks are bad
-                if ('Phprpg\Core\Entities\Player' != get_class($mob) || $mob->isExpired()){
-                    continue;
-                }
-                
-                $players[] = $mob;
-                
-            }
-
-        }
-
-        return $players;
-
-    }
     
     public function build():void{
         
@@ -339,6 +274,9 @@ class WorldBuilder {
         
         $mobs = clone $this->storage->getStorage('Mob');
         $mobs->clearStorage();
+        
+        $playerStorage = clone $this->storage->getStorage('Player');
+        $playerStorage->clearStorage();
         
         $items = clone $this->storage->getStorage('Item');
         $items->clearStorage();
@@ -383,7 +321,7 @@ class WorldBuilder {
                             
                                 case '5':
                                     $pushables->storeAtXY($this->pushableBlockAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
-                                    Lo::g($this->getPushableBlockStorage()->getEntityByXY($x,$y));
+                                    Lo::g($this->storage->getPushableBlockStorage()->getEntityByXY($x,$y));
                                 break;
                                 
                                 case '9':
@@ -406,17 +344,23 @@ class WorldBuilder {
         }
         
         
-        if ($players = $this->getPlayers()){
+        if ($players = $this->getStorageBundle()->getPlayerStorage()->getEntities()){
             
-            foreach ($players as $k => $pl){
+            $k = 0;
+            
+            foreach ($players as $y => $xarr){
                 
-                if (!empty($this->playerSpawnCoordinates[$k])){
-                    $mobs->storeAtXY($pl,$this->playerSpawnCoordinates[$k]->getX(),$this->playerSpawnCoordinates[$k]->getY());
-                } else {
-                    throw new Exception("there are fewer player spawn points than there are players");
+                foreach ($xarr as $x => $pl){
+                    
+
+                    if (!empty($this->playerSpawnCoordinates[$k])){
+                        $playerStorage->storeAtXY($pl,$this->playerSpawnCoordinates[$k]->getX(),$this->playerSpawnCoordinates[$k]->getY());
+                    } else {
+                        throw new \Exception("there are fewer player spawn points than there are players");
+                    }
+                
+                    $k++;
                 }
-                
-                
                 
             }
             
@@ -427,6 +371,7 @@ class WorldBuilder {
         
         $this->storage->setStorage('Mob',$mobs);
 
+        $this->storage->setStorage('Player',$playerStorage);
         
         $this->storage->setStorage('Item',$items);
         

@@ -68,12 +68,10 @@ class StorageBundle {
                 
                     if ('PushableBlock' == $storage_type){
                         $collision = $this->movePushableBlock($storedEntity,$mobCoords,$newCoords);
-                        Lo::gG(gettype($collision));
                     } else {
                         $collision = $storedEntity->collisionAction($entity);
                     }
                     
-                    //$action_performed[$storage_type] = $collision;
 
                     if ($collision){
                         $movement_possible[$storage_type] = true;
@@ -84,7 +82,10 @@ class StorageBundle {
                     } else {
                         $movement_possible[$storage_type] = false;
                     }
-                
+                    
+                    if ($storedEntity->isExpired()){
+                        $storage->unsetEntity($newCoords);
+                    }
                 }
                 
             }
@@ -94,12 +95,8 @@ class StorageBundle {
             
             if (!in_array(false,$movement_possible)){
 
-                if ($entity_class_name != 'PushableBlock'){
-                    $this->getStorage('Mob')->moveEntity($entity,$mobCoords,$newCoords);
-                } else {
+                $this->getStorage($entity_class_name)->moveEntity($entity,$mobCoords,$newCoords);
 
-                    $this->getStorage($entity_class_name)->moveEntity($entity,$mobCoords,$newCoords);
-                }
                 return true;
             }
             
@@ -136,4 +133,38 @@ class StorageBundle {
         return $this->collisionActionCheck($block,$pushToCoords,$newBlockCoordinates);
         
     }
+    
+    //moving storage related methods from WorldBuilder
+    public function getWorldTiles():array{
+        return $this->getStorage('Tile')->getEntities();
+    }
+    
+    public function getMobs():array{
+        return $this->getStorage('Mob')->getEntities();
+    }
+    
+    public function getPlayers():array{
+        return $this->getStorage('Player')->getEntities();
+    }
+    
+    public function getMobStorage():GameEntityStorage{
+        return $this->getStorage('Mob');
+    }
+    
+    public function getPlayerStorage():GameEntityStorage{
+        return $this->getStorage('Player');
+    }
+    
+    public function getItemStorage():GameEntityStorage{
+        return $this->getStorage('Item');
+    }
+    
+    public function getPushableBlockStorage():GameEntityStorage{
+        return $this->getStorage('PushableBlock');
+    }
+    
+    public function getTileStorage():TileStorage{
+        return $this->getStorage('Tile');
+    }
+    
 }

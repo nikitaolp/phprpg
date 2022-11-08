@@ -12,13 +12,13 @@
 namespace Phprpg\Core\Turns;
 use Phprpg\Core\{Lo,AppStorage};
 use Phprpg\Core\Turns\{DirectionTools,Coordinates};
-use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,GameEntityStorage};
+use Phprpg\Core\Entities\Storage\{TileStorage,MobStorage,PlayerStorage,GameEntityStorage};
 use Phprpg\Core\Entities\{GameEntity,Tile,Mob,Player};
 
 class DirectionPriority {
     //put your code here
     
-    public  function __construct(private Mob $mob, private Coordinates $mobCoords, private GameEntityStorage $mobStorage, private GameEntityStorage $itemStorage){
+    public  function __construct(private Mob $mob, private Coordinates $mobCoords, private GameEntityStorage $mobStorage, private GameEntityStorage $itemStorage,private GameEntityStorage $playerStorage){
         
     }
     
@@ -132,12 +132,29 @@ class DirectionPriority {
     
     private function enemies(int $sight, bool $includeOpposite):array{
         
-        if ($sight == 1){
-            $mobs = $this->mobStorage->getDirectlyAccessibleEntities($this->mobCoords);
-        } else {
-            $mobs = $this->mobStorage->getSurroundingEntities($this->mobCoords,$sight);
+        $enemies['attack'] = [];
+        $enemies['escape'] = [];
+        
+        foreach ([$this->mobStorage,$this->playerStorage] as $storage){
+            
+            if ($sight == 1){
+                $mobs = $storage->getDirectlyAccessibleEntities($this->mobCoords);
+            } else {
+                $mobs = $storage->getSurroundingEntities($this->mobCoords,$sight);
+            }
+
+            $attackEscapeArrays = $this->checkStoragesForEnemies($sight,$includeOpposite,$mobs);
+
+            $enemies['attack'] = array_merge($enemies['attack'],$attackEscapeArrays['attack']);
+            $enemies['escape'] = array_merge($enemies['escape'],$attackEscapeArrays['escape']);
         }
         
+        
+
+        return $enemies;
+    }
+    
+    private function checkStoragesForEnemies(int $sight, bool $includeOpposite,array $mobs):array{
         
         $enemies['attack'] = [];
         $enemies['escape'] = [];

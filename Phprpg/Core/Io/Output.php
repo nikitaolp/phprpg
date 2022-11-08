@@ -50,7 +50,7 @@ class Output {
         $str = '';
         
         if ($this->world){
-            $player = $this->world->getMobStorage()->getEntity($coord);
+            $player = $this->world->getStorageBundle()->getPlayerStorage()->getEntity($coord);
             
             if ($player){
                 $str = "<p>Name: {$player->getNickname()}</p>
@@ -119,7 +119,7 @@ class Output {
     private function getFullMap():string{
         $map = '';
         if ($this->world){
-           $map =  $this->getMapFromArray($this->world->getTileStorage()->getEntities(),'fullMap');
+           $map =  $this->getMapFromArray($this->world->getStorageBundle()->getTileStorage()->getEntities(),'fullMap');
         }
         return $map;
     }
@@ -151,13 +151,28 @@ class Output {
                     
                     
 
-                    $tile = $this->world->getTileStorage()->getEntityByXY($x, $y);
+                    $tile = $this->world->getStorageBundle()->getTileStorage()->getEntityByXY($x, $y);
 
                     if ($tile){
                         $gfxMap .= "<div class='tilebg {$tile->getName()} coordX_{$x} coordY_{$y} {$zoom_class}' >";
-                            $mob = $this->world->getMobStorage()->getEntityByXY($x,$y);
-                            //$mob = false;
-                            if ($mob){
+                            
+                            if ($player = $this->world->getStorageBundle()->getPlayerStorage()->getEntityByXY($x,$y)){
+
+
+                                $inv = '';
+                                if ($invent = $player->getInventoryString()){
+                                    $inv = ", inventory: $invent";
+                                }
+
+                                $gfxMap .= "<span class='mobHelper {$player->getStatusClasses()}' 
+                                    data-health='{$player->getHealth()}' 
+                                    data-level='{$player->getLevel()}'
+                                    data-dmg='{$player->getDmg()}'
+                                    style='--health-width:{$player->getHealthPercentage()}%'><img 
+                                    title='{$player->getNickname()}, lvl. {$player->getLevel()} $inv' 
+                                    class='mobImg direction_{$player->getDirection()} coordX_{$x} coordY_{$y} {$player->getStatusClasses()}' 
+                                    src='/Phprpg/Resources/Gfx/{$player->getGfx()}'></span>";
+                            } else if ($mob = $this->world->getStorageBundle()->getMobStorage()->getEntityByXY($x,$y)){
 
 
                                 $inv = '';
@@ -173,12 +188,12 @@ class Output {
                                     title='{$mob->getNickname()}, lvl. {$mob->getLevel()} $inv' 
                                     class='mobImg direction_{$mob->getDirection()} coordX_{$x} coordY_{$y} {$mob->getStatusClasses()}' 
                                     src='/Phprpg/Resources/Gfx/{$mob->getGfx()}'></span>";
-                            } else if ($item = $this->world->getItemStorage()->getEntityByXY($x,$y)){
+                            } else if ($item = $this->world->getStorageBundle()->getItemStorage()->getEntityByXY($x,$y)){
                                 $gfxMap .= "<span class='itemHelper'><img 
                                     title='{$item->getName()}' 
                                     class='mobImg coordX_{$x} coordY_{$y}' 
                                     src='/Phprpg/Resources/Gfx/{$item->getGfx()}'></span>";
-                            } else if ($pushable = $this->world->getPushableBlockStorage()->getEntityByXY($x,$y)){
+                            } else if ($pushable = $this->world->getStorageBundle()->getPushableBlockStorage()->getEntityByXY($x,$y)){
                                 $gfxMap .= "<span class='itemHelper'><img 
                                     title='{$pushable->getName()}' 
                                     class='mobImg coordX_{$x} coordY_{$y}' 
