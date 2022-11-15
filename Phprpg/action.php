@@ -1,5 +1,7 @@
 <?php
 
+//this is the ugliest code of this entire project. one day i will make it object-oriented.
+
 namespace Phprpg;
 
 use Phprpg\Core\{Lo,AppStorage};
@@ -13,19 +15,19 @@ use Phprpg\Core\VictoryDefeat\{VictoryDefeat,VictoryDefeatManager};
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-// notices and warnings
+
 $time_start = microtime(true);
 
 
 require '../vendor/autoload.php';
 Lo::g('Log start');
 
-AppStorage::set('cfg',require 'Config/cfg.php');
-AppStorage::set('tiles',require 'Config/tiles.php');
-AppStorage::set('mobs',require 'Config/mobs.php');
-AppStorage::set('players',require 'Config/players.php');
-AppStorage::set('items',require 'Config/items.php');
-AppStorage::set('pushables',require 'Config/pushableblocks.php');
+AppStorage::set('cfg',require CFG);
+AppStorage::set('tiles',require TILES);
+AppStorage::set('mobs',require MOBS);
+AppStorage::set('players',require PLAYERS);
+AppStorage::set('items',require ITEMS);
+AppStorage::set('pushables',require PUSHABLES);
 
 
 AppStorage::set('db', new Database(require 'cred.php'));
@@ -57,55 +59,20 @@ if ($state->isGameStarted()){
                     ])
                 );
 
-
-        //$world->build();
         
-        //testing custom levels, unstable hack {
-        
-                /**
-                 * 
-                 * so, the problem: level shouldn't contain VictoryDefeatManager, it contains $world reference, and if i want to store
-                 * level inside world... we end up with property object having reference to containing object, this is weird... well this is gross, shouldn't be this way
-                 * 
-                 * thus, level should only have victory defeat array
-                 * 
-                 * and how should the whole thing work then? 
-                 * 
-                 * 1. we check if world exists in state
-                 * 
-                 * if no, we check if there are any levels in level config
-                 * 
-                 * if yes, we get level, store it inside world, and build it. 
-                 * 
-                 * next turn, there is a level in world. then we check world->victorydefeat. if victory, then
-                 * 
-                 * levelmanager->nextLevel($world->get level)
-                 * if this is null... well, then we delete the level inside world, and build a random one. 
-                 * 
-                 * then victory defeat stuff...
-                 * 
-                 * 1. check if there is a level with vd array inside world
-                 * 2. if yes, create vd manager with this array. if no, use the default array
-                 * 3. then... everything is same? 
-                 * 
-                 */
-        
-                $levels = new LevelManager(require 'Config/levels.php',require 'Config/victory.php');
+                $levels = new LevelManager(require LEVELS,require VICTORY);
                 
                 
                 if ($firstLevel = $levels->getLevel()){
                     $world->setLevel($firstLevel);
                 } else {
-                    $world->setLevel(new Level(require 'Config/victory.php', [], 'Random level', 0));
+                    $world->setLevel(new Level(require VICTORY, [], 'Random level', 0));
                 }
                 
 
-                
-                
 
                 $world->build();
                 
-        //} testing custom levels
         
         $state->setWorld($world);
         
@@ -168,24 +135,28 @@ if ($state->isGameStarted()){
             
             if ($victoryDefeat->getVictory()){
                 
-                $levels = new LevelManager(require 'Config/levels.php',require 'Config/victory.php');
+                $levels = new LevelManager(require LEVELS,require VICTORY);
                 
-                $world->setLevel($levels->getLevel($world->getLevel()));
-                $world->build();
-                
-                $newVictoryDefeatManager = new VictoryDefeatManager($world->getLevel()->getVictoryDefeatArray(), $world);
-                $newVictoryDefeat = $newVictoryDefeatManager->getVictoryDefeat();
-                
-                
-                $world->setVictoryDefeat($newVictoryDefeat);
-                
-                if ($newVictoryDefeat->getVictory()){
-                
-                Lo::gG($world->getLevel()->getVictoryDefeatArray());
-                
+                if ($new_level = $levels->getLevel($world->getLevel())){
+                    $world->setLevel($new_level);
+                    $world->build();
+
+                    $newVictoryDefeatManager = new VictoryDefeatManager($world->getLevel()->getVictoryDefeatArray(), $world);
+                    $newVictoryDefeat = $newVictoryDefeatManager->getVictoryDefeat();
+
+
+                    $world->setVictoryDefeat($newVictoryDefeat);
+
+                    if ($newVictoryDefeat->getVictory()){
+
+                        Lo::gG($world->getLevel()->getVictoryDefeatArray());
+
+                    }
+
+                    $worldCommander->findPlayerCoordinates();
                 }
                 
-                $worldCommander->findPlayerCoordinates();
+                
             }
         }
 

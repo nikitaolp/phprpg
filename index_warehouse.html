@@ -382,7 +382,7 @@
         </div>
         <div class="col50 colGame">
             <div class="topButtons">
-                <form class='newGameForm' action="/Phprpg/game_random.php" method="POST">
+                <form class='newGameForm' action="/Phprpg/game_warehouse.php" method="POST">
                     <input type="hidden" id="newgame" name="newgame" value="true">
                     <button>New game</button>
                 </form>
@@ -408,7 +408,7 @@
               <div class="gameInfo" > Controls - WASD to walk, attack enemies by walking into them</div>
               <div class="gameInfo" > Victory conditions: player reached level 10, or collected 5 gold, or reached coordinates x:1 y:1</div>
               <div class="gameInfo" > Defeat conditions: any of the mobs reached level 20, or collected 20 gold, or all the player slots are taken and players are dead</div>
-              <div class="gameInfo" > This is RANDOM level game, check out <a href="/index_warehouse.html">pre-built level game</a></div>
+              <div class="gameInfo" > This is PRE BUILT level game, check out <a href="/index.html">random level game</a></div>
           </div>
           
 
@@ -425,7 +425,7 @@
             document.getElementById("gamePage").classList.add("requestLoading");
             document.getElementById("spinner").classList.add("show");
 
-            this.open('POST', '/Phprpg/game_random.php');
+            this.open('POST', '/Phprpg/game_warehouse.php');
             this.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
             this.send(JSON.stringify({'action':action,'direction':direction}));
             

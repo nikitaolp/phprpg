@@ -136,42 +136,7 @@ class WorldBuilder {
         
     }
     
-    //world array should be GameEntityStorage type object, not just array. But how to "build" then? Maybe just build here and then set the entire array in object
-    //ok world array is gone, long live tile storage
-    public function buildRandom():void{
-        
-            for ($h = 0; $h<= $this->height-1; $h++){
-            
-                //$this->worldArray[$h] = [];
-                    
-                for ($w = 0; $w<= $this->width-1; $w++){
-                       $randomTile = $this->tileAssembler->tryToGetRandom();
-                       if (!$randomTile) {
-                           throw new Exception("Random tile is null, default tile with 100 chance likely not set in cfg");
-                       } else {
-                           
-                           $this->storage->getStorage('Tile')->storeAtXY($randomTile, $w, $h);
-                           
-                           //$this->storage->getStorage('Tile')->getEntities();
-                           //$this->storage->getStorage('Tile')->getEntityByXY()
-                           
-                           //$this->worldArray[$h][$w] = $randomTile;
-                           
-                           if (!$this->tryToFillTile($this->storage->getStorage('Tile')->getEntityByXY($w,$h),$this->storage->getStorage('Mob'),$this->mobAssembler, $w, $h)){
-                               $this->tryToFillTile($this->storage->getStorage('Tile')->getEntityByXY($w,$h),$this->storage->getStorage('Item'),$this->itemAssembler, $w, $h);
-                           }
-                           
 
-                       }
-                       
-                }
-            
-        }
-        
-     $this->maxMobCount = $this->storage->getStorage('Mob')->getAllEntityCount();   
-     $this->maxItemCount = $this->storage->getStorage('Item')->getAllEntityCount();  
-
-    }
     
     public function tryToFillTile(Tile $tile, GameEntityStorage $storage, GameEntityFactory $factory, $x, $y):?GameEntity{
         
@@ -265,6 +230,43 @@ class WorldBuilder {
         }
         
     }
+    
+        //world array should be GameEntityStorage type object, not just array. But how to "build" then? Maybe just build here and then set the entire array in object
+    //ok world array is gone, long live tile storage
+    public function buildRandom():void{
+        
+            for ($h = 0; $h<= $this->height-1; $h++){
+            
+                    
+                for ($w = 0; $w<= $this->width-1; $w++){
+                       $randomTile = $this->tileAssembler->tryToGetRandom();
+                       if (!$randomTile) {
+                           throw new Exception("Random tile is null, default tile with 100 chance likely not set in cfg");
+                       } else {
+                           
+                           $this->storage->getStorage('Tile')->storeAtXY($randomTile, $w, $h);
+                           
+                           //$this->storage->getStorage('Tile')->getEntities();
+                           //$this->storage->getStorage('Tile')->getEntityByXY()
+                           
+                           //$this->worldArray[$h][$w] = $randomTile;
+                           
+                           if (!$this->tryToFillTile($randomTile,$this->storage->getStorage('Mob'),$this->mobAssembler, $w, $h)){
+                               $this->tryToFillTile($randomTile,$this->storage->getStorage('Item'),$this->itemAssembler, $w, $h);
+                           }
+                           
+
+                       }
+                       
+                }
+            
+        }
+        
+     $this->maxMobCount = $this->storage->getStorage('Mob')->getAllEntityCount();   
+     $this->maxItemCount = $this->storage->getStorage('Item')->getAllEntityCount();  
+
+    }
+    
      
     
     private function buildFromLevelArray(array $level_array):void{
@@ -321,7 +323,6 @@ class WorldBuilder {
                             
                                 case '5':
                                     $pushables->storeAtXY($this->pushableBlockAssembler->getByEntityId($tile_placeholder[1]),$x,$y);
-                                    Lo::g($this->storage->getPushableBlockStorage()->getEntityByXY($x,$y));
                                 break;
                                 
                                 case '9':

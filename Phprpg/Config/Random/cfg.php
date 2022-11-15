@@ -1,7 +1,7 @@
 <?php
 return [
-        'type'=>'phprpg',
-        'player_limit'=>4,
+        'type'=>'warehouse',
+        'player_limit'=>1,
         'height'=>70,
         'width'=>70,
         'mob_sight'=>3,
@@ -14,5 +14,6 @@ return [
         ],
         'turn_timeout'=>30,
         'print_radius'=>7,
-        'zoom_in_radius'=>3
+        'zoom_in_radius'=>3,
+        'index_location'=>'index.html'
     ];

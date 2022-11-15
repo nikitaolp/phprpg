@@ -60,7 +60,7 @@ class LevelManager {
             return $this->getFirstLevel();
         }
 
-        return new Level($this->defaultVictoryDefeatArray, [], 'Random level', 0);
+        return null;
         
     }
     

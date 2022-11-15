@@ -89,7 +89,7 @@ class GameState {
     private function newGame():void{
         $this->quitGame();
         $this->createGame();
-        header("Location: /");
+        header("Location: /".AppStorage::get('cfg','index_location'));
         die();
     }
     
@@ -348,7 +348,7 @@ class GameState {
                 unset($all_players_sorted[$current_turn_order]);
                 
                 foreach ($all_players_sorted as $turn_order => $cur_pl){
-                    if (!$this->world->isPlayerDead($cur_pl['id'])){
+                    if (!$this->world->getStorageBundle()->getPlayerStorage()->isPlayerDead($cur_pl['id'])){
                         $current_turn_order = $turn_order;
                         break;
                     }
