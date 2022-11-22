@@ -5,7 +5,7 @@ return [
         'Phprpg\Core\Entities\Player'=>[
             'stats'=>['level'=>10],
             'inventory'=>['gold'=>5],
-            'coordinates'=>[1,1]
+            'coordinatesSingle'=>[1,1]
             
             ]
         ],

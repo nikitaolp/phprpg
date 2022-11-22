@@ -44,6 +44,7 @@ class GameEntityStorage {
         return null;
     }
     
+    
     public function getSurroundingEntities(Coordinates $coord,$range){
         return $this->getSurroundingEntitiesByXY($coord->getX(),$coord->getY(), $range);
     }

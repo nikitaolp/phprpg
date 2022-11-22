@@ -133,4 +133,47 @@ return  [
             'desc'=>'walkable stones',
             'chance'=>3
             ],
+        'floorboards-wenge'=>[
+            'walkable'=>true,
+            'gfx'=>'grass-stones.png',
+            'entity_id'=>'119',
+            'desc'=>'wenge wood flooring, perfect for a cozy warehouse',
+            'chance'=>3
+         ],
+        'bricks-yellow'=>[
+            'walkable'=>false,
+            'gfx'=>'bricks-yellow.png',
+            'entity_id'=>'120',
+            'desc'=>'yellow brick wall. why yellow? i dunno, artistic choice',
+            'chance'=>3
+         ],
+         'bricks-blue'=>[
+            'walkable'=>false,
+            'gfx'=>'bricks-blue.png',
+            'entity_id'=>'121',
+            'desc'=>'not sure',
+            'chance'=>3
+         ],
+        'floorboards-light'=>[
+            'walkable'=>true,
+            'gfx'=>'floorboards-light.png',
+            'entity_id'=>'123',
+            'desc'=>'not sure',
+            'chance'=>3
+         ],
+        'bricks-red'=>[
+            'walkable'=>false,
+            'gfx'=>'bricks-red.png',
+            'entity_id'=>'124',
+            'desc'=>'not sure',
+            'chance'=>3
+         ],
+         'target-floorboards-light'=>[
+            'walkable'=>true,
+            'gfx'=>'target-floorboards-light.png',
+            'entity_id'=>'125',
+            'desc'=>'not sure',
+            'chance'=>3
+         ],
+    
     ];

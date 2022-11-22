@@ -1,9 +1,9 @@
 <?php
 return [
     'player'=>[
-            'gfx'=>'player.png',
+            'gfx'=>'undead.png',
             'entity_id'=>'401',
-            'desc'=>'Basic player',
+            'desc'=>'Warehouse guy',
             'chance'=>100,
             'hp'=>500,
             'dmg'=>50,

@@ -1,7 +1,7 @@
 <?php
 return [
-        'type'=>'phprpg',
-        'player_limit'=>4,
+        'type'=>'warehouse',
+        'player_limit'=>1,
         'height'=>70,
         'width'=>70,
         'mob_sight'=>3,

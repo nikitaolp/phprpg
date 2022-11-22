@@ -74,7 +74,9 @@ class VictoryDefeatManager {
 
     }
    
-    
+    /*
+     * "players" and "pushableblocks" not having checkStorageForCondition is not cool, but they are just too different
+     */
     private function checkConditions(array $array):bool{
         
         $any_condition_true = false;
@@ -91,6 +93,9 @@ class VictoryDefeatManager {
                     break;
                 case 'players':
                     $any_condition_true = $this->checkPlayers($conditions);
+                    break;
+                case 'Phprpg\Core\Entities\PushableBlock':
+                    $any_condition_true = $this->checkIfEntityIdsAtCoordinates($this->world->getStorageBundle()->getPushableBlockStorage(),$conditions);
                     break;
             }
             
@@ -134,11 +139,12 @@ class VictoryDefeatManager {
                                     $this->vd->setMessage("Condition: {$type_string} inventory contents");
                                 }
                                 break;
-                            case 'coordinates':
+                            case 'coordinatesSingle':
                                 if ($any_condition_true = $this->checkCoordinates(new Coordinates($x,$y),$cond_val_array)){
                                     $this->vd->setMessage("Condition: {$type_string} coordinates");
                                 }
                                 break;
+
                         }
                         
                         
@@ -189,6 +195,42 @@ class VictoryDefeatManager {
         }
         
         return $condition_bool;
+    }
+    
+    private function checkIfEntityIdsAtCoordinates(GameEntityStorage $storage, $coordArray):bool{
+        
+        if (!isset($coordArray['coordinatesMultipleByEntityId'])){
+            return false;
+        }
+        
+        Lo::gG($coordArray);
+        
+        $allConditionsMet = false;
+        
+        foreach ($coordArray['coordinatesMultipleByEntityId'] as $id =>$coordinatesArray){
+            
+            foreach ($coordinatesArray as $k=>$coords){
+                if (!isset($coords[0]) || !isset($coords[1])){
+                    return false;
+                }
+                $coords = new Coordinates($coords[0],$coords[1]);
+                
+                $ent = $storage->getEntity($coords);
+                Lo::gG($coords);
+                if (!$ent){
+                    return false;
+                } 
+                if ($ent->getEntityId() != $id){
+                    return false;
+                }
+                $allConditionsMet = true;
+                
+            }
+            
+        }
+        
+        return $allConditionsMet;
+        
     }
     
     
