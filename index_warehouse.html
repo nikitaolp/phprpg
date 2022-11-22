@@ -461,7 +461,7 @@
         
         GameRequest.autoUpdate = function (action){
             this.idleAction = action;
-            this.fire(action,null,2200);
+            this.fire(action,null,10000);
         };
         
         GameRequest.update = function (action,direction){
@@ -472,7 +472,7 @@
                 this.abort();
                 
                 clearTimeout(this.timeoutID);
-                this.fire(action,direction,2200);
+                this.fire(action,direction,10000);
             }
         };
         

@@ -355,6 +355,7 @@ class WorldBuilder {
                     
 
                     if (!empty($this->playerSpawnCoordinates[$k])){
+                        $pl->setDirection(null);
                         $playerStorage->storeAtXY($pl,$this->playerSpawnCoordinates[$k]->getX(),$this->playerSpawnCoordinates[$k]->getY());
                     } else {
                         throw new \Exception("there are fewer player spawn points than there are players");

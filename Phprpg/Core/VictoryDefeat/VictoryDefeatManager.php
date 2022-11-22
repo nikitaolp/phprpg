@@ -203,7 +203,6 @@ class VictoryDefeatManager {
             return false;
         }
         
-        Lo::gG($coordArray);
         
         $allConditionsMet = false;
         
@@ -216,7 +215,6 @@ class VictoryDefeatManager {
                 $coords = new Coordinates($coords[0],$coords[1]);
                 
                 $ent = $storage->getEntity($coords);
-                Lo::gG($coords);
                 if (!$ent){
                     return false;
                 } 
