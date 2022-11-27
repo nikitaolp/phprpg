@@ -3,7 +3,11 @@ Turn based game engine prototype. Now includes a PHP Sokoban implementation!
 
 This is a study project, i don't recommend installing this on a production server
 
+![image](https://user-images.githubusercontent.com/5816206/204148466-3670657d-9bf3-4a74-bfa1-242abb20658f.png)
 Demo: https://phprpg.cf/
+
+![image](https://user-images.githubusercontent.com/5816206/204148458-6f42f57d-193e-4902-9968-e3cffc17b60d.png)
+https://phprpg.cf/index_warehouse.html
 
 Database config in /Phprpg/cred.php
 
