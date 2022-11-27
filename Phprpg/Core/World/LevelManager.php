@@ -24,13 +24,19 @@ class LevelManager {
                 ctype_digit((string)$levelData['order']) &&
                 !empty($levelData['victoryDefeatConditions']) 
             ){
+                $resettable = false;
+                if (isset($levelData['resettable']) && is_bool($levelData['resettable'])){
+                    $resettable = $levelData['resettable'];
+                }
+                
                 $this->levels[$levelData['order']] = new Level(
                         $levelData['victoryDefeatConditions'],
                         $levelData['entityIdArray'],
                         $levelData['name'],
                         $levelData['order'],
                         $levelData['maxMobCount'],
-                        $levelData['maxItemCount']
+                        $levelData['maxItemCount'],
+                        $resettable
                 );
             } else {
                 throw new Exception("Level config is invalid");

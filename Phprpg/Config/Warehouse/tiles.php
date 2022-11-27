@@ -175,5 +175,26 @@ return  [
             'desc'=>'not sure',
             'chance'=>3
          ],
+        'tv'=>[
+            'walkable'=>false,
+            'gfx'=>'tv.png',
+            'entity_id'=>'126',
+            'desc'=>'some entertainment between shifts',
+            'chance'=>3
+         ],
+        'chair'=>[
+            'walkable'=>true,
+            'gfx'=>'chair.png',
+            'entity_id'=>'127',
+            'desc'=>'to sit down and relax',
+            'chance'=>3
+         ],
+        'kitchen'=>[
+            'walkable'=>false,
+            'gfx'=>'chair.png',
+            'entity_id'=>'128',
+            'desc'=>"this is too much, but a man gotta eat",
+            'chance'=>3
+         ],
     
     ];

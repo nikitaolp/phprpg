@@ -106,7 +106,7 @@ if ($state->isGameStarted()){
     if ($my_turn){
         
 
-        if (in_array($input_action,['move','skip']) || $world->getStorageBundle()->getPlayerStorage()->isPlayerDead($state->getPlayerId())){
+        if (in_array($input_action,['move','skip','reset']) || $world->getStorageBundle()->getPlayerStorage()->isPlayerDead($state->getPlayerId())){
 
             $worldCommander->playerTurn();
             
@@ -137,7 +137,9 @@ if ($state->isGameStarted()){
                 
                 $levels = new LevelManager(require LEVELS,require VICTORY);
                 
-                if ($new_level = $levels->getLevel($world->getLevel())){
+                $current_level = $world->getLevel();
+                
+                if ($new_level = $levels->getLevel($current_level)){
                     $world->setLevel($new_level);
                     $world->build();
 
@@ -146,10 +148,12 @@ if ($state->isGameStarted()){
 
 
                     $world->setVictoryDefeat($newVictoryDefeat);
+                    
+                    Lo::gG($current_level->getLevelPassedString());
 
                     if ($newVictoryDefeat->getVictory()){
 
-                        Lo::gG($world->getLevel()->getVictoryDefeatArray());
+                        
 
                     }
 

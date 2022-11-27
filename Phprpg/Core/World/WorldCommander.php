@@ -97,6 +97,12 @@ class WorldCommander {
 
                 }                        
             }
+            $action = $this->input->getAction();
+            
+            if ($action && $action == 'reset'){
+                $this->world->build();
+                $this->findPlayerCoordinates();
+            }
         }
  
     }

@@ -5,7 +5,7 @@ class Input {
     //put your code here
     
     private array $directions = ['north','south','east','west'];
-    private array $actions = ['move','skip','check'];
+    private array $actions = ['move','skip','check','reset'];
     
     private ?string $action = null;
     

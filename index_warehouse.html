@@ -181,6 +181,25 @@
             .bricks-blue{
                 background-image:url(/Phprpg/Resources/Gfx/bricks-blue.png);
             }
+            .tv{
+                background-image:url(/Phprpg/Resources/Gfx/tv.png);
+            }
+            
+            .chair{
+                background-image:url(/Phprpg/Resources/Gfx/chair.png);
+            }
+            
+            .kitchen{
+                background-image:url(/Phprpg/Resources/Gfx/kitchen.png);
+            }
+            
+            .good-job{
+                background-image:url(/Phprpg/Resources/Gfx/good-job.png);
+            }
+            
+            .arrow{
+                background-image:url(/Phprpg/Resources/Gfx/arrow.png);
+            }
             
             .grass2{
                 background-image:url(/Phprpg/Resources/Gfx/grass2.png);
@@ -408,8 +427,7 @@
                     <input type="hidden" id="newgame" name="newgame" value="true">
                     <button>New game</button>
                 </form>
-                  <button class="invisibleBeforeStart hidden" onclick="GameRequest.update('move','skip');">Skip Turn</button>
-                  <button class="invisibleBeforeStart hidden" onclick="GameRequest.autoUpdate('skip');">Auto Turn</button>
+                  <button class="invisibleBeforeStart hidden" onclick="GameRequest.update('reset');">Reset level</button>
                   <div id="spinner" class='hidden'></div>
             </div>
               <div id="actionContainer"></div>
@@ -489,6 +507,12 @@
                 if (response !== undefined){
                     document.getElementById("actionContainer").innerHTML = response.map;
                     
+                    if (document.getElementById("actionContainer").childNodes.length > 0){
+                        Array.from(document.getElementsByClassName("invisibleBeforeStart")).forEach(function(item) {
+                            item.classList.remove("hidden");
+                        });
+                    }
+                    
                     if (response.game_log !== ''){
                         
                         if (response.game_log !==document.getElementById("game_log").innerHTML){
@@ -512,6 +536,7 @@
                     if (document.getElementById("joinCode").innerHTML !== response.join_code){
                         
                         //i guess i am using join_code as an indicator that the game is started, for now
+                        //uh, that was stupid, because there is no join code in single player games...
                         
                         document.getElementById("joinCode").innerHTML = response.join_code;
                         
@@ -523,9 +548,7 @@
                             
                             let elementsToShow = document.getElementsByClassName("invisibleBeforeStart");
                             
-                            Array.from(document.getElementsByClassName("invisibleBeforeStart")).forEach(function(item) {
-                                item.classList.remove("hidden");
-                            });
+                            
                             
                             
                             

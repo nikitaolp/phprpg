@@ -1,5 +1,5 @@
 # phprpg
-Turn based game engine prototype. This is a study project, i sure as hell don't recommend installing this on a production server
+Turn based game engine prototype. This is a study project, i don't recommend installing this on a production server
 
 Demo: https://phprpg.cf/
 

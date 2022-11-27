@@ -17,7 +17,8 @@ class Level {
                                 private string $name,
                                 private int $order,
                                 private int $maxMobCount = 50,
-                                private int $maxItemCount = 50){
+                                private int $maxItemCount = 50,
+                                private bool $resettable = false){
         
         
     }
@@ -32,6 +33,14 @@ class Level {
     
     public function getName(){
         return $this->name;
+    }
+    
+    public function isResettable():bool{
+        return $this->resettable;
+    }
+    
+    public function getLevelPassedString(){
+        return "<span class=logColor1>{$this->name}</span> <span class=logColor2> - passed!</span>";
     }
     
     public function getVictoryDefeatArray():array{
