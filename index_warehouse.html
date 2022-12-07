@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>PHP RPG</title>
+        <title>PHP Sokoban</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="prefetch" href="/Phprpg/Resources/Gfx/dirt.png" />
@@ -28,6 +28,8 @@
             .topButtons{
                 padding:6px;
             }
+            
+            
             
             #game_log,#tech_log{
                 
@@ -79,6 +81,7 @@
             
             #playerInfo{
                 color:#d9d986;
+                display:none;
             }
             
             #turnMessage{
@@ -373,11 +376,11 @@
                 }
                 
                 .colLog{
-                    order:3;
+                    order:2;
                 }
                 
                 .colInfo{
-                    order:2;
+                    order:3;
                 }
                 
                 .container{
@@ -405,6 +408,10 @@
                 .fullMap .mobImg.attack{
                     background-image:none;
                 }
+                
+                #tech_log,.techLogHeader{
+                    display:none;
+                }
             }
         </style>
     </head>
@@ -414,7 +421,7 @@
         <div class="col25 colLog">
             <h4 class="logHeader" id="gameLogHeader">Game log</h4>
             <div id="game_log"></div>
-            <h4 class="logHeader">Tech log</h4>
+            <h4 class="logHeader techLogHeader">Tech log</h4>
             <div id="tech_log"></div>
             <div class="gameInfo hidden" id="joinCodeHeader">Join code (actually, just copy Join Game Link instead): </div>
             <div class="gameInfo" id="joinCode"></div>
@@ -442,11 +449,8 @@
               <div class="gameInfo"><span id="joinLink"></span><span id="playerSlots"></span></div>
               <div class="gameInfo" id="turnMessage"></div>
               <div class="gameInfo" id="playerInfo"></div>
-              
-              <div class="gameInfo" > Controls - WASD to walk, attack enemies by walking into them</div>
-              <div class="gameInfo" > Victory conditions: player reached level 10, or collected 5 gold, or reached coordinates x:1 y:1</div>
-              <div class="gameInfo" > Defeat conditions: any of the mobs reached level 20, or collected 20 gold, or all the player slots are taken and players are dead</div>
-              <div class="gameInfo" > This is PRE BUILT level game, check out <a href="/index.html">random level game</a></div>
+             
+              <div class="gameInfo" >Use WASD or the on screen buttons to control the character. This is PRE BUILT sokoban level game, check out <a href="/index.html">random level RPG game</a></div>
           </div>
           
 
